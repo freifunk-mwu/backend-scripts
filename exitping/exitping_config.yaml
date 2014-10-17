@@ -1,0 +1,27 @@
+common:
+    bw_up: &BW_UP '96MBit'
+    bw_dn: &BW_DN '96MBit'
+ping:
+    addresses:
+    - '95.143.172.211' # freifunk-mainz.de
+    - '95.143.172.219' # freifunk-wiesbaden.de
+    - '144.76.185.220' # cccmz.de
+    - '217.197.80.240' # freifunk.net
+    - '213.73.89.123'  # ccc.de
+    urls:
+    - 'freifunk-mainz.de'
+    - 'freifunk-wiesbaden.de'
+    - 'freifunk-mwu.de'
+    - 'cccmz.de'
+    - 'freifunk.net'
+    - 'ccc.de'
+    - 'penisland.net'
+    interface: 'exitVPN'
+    min_ratio: 0.6
+batman:
+    mz:
+        interface: mzBAT
+        bandwidth: !str_join [*BW_UP, '/', *BW_DN]
+    wi:
+        interface: wiBAT
+        bandwidth: !str_join [*BW_UP, '/', *BW_DN]
