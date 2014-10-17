@@ -1,1 +1,13 @@
-# gitkeep
+common:
+    gh_ident: &GH_ID github
+fastd:
+    mz:
+        interface: &MZ_IF mzVPN
+        local: !loc_join ['/etc/fastd', *MZ_IF, 'peers']
+        remote: !str_join ['ssh://', *GH_ID ,'/freifunk-mwu/peers-ffmz.git']
+        pidfile: !loc_join ['/var/run', !str_join ['fastd.', *MZ_IF, '.pid']]
+    wi:
+        interface: &WI_IF wiVPN
+        local: !loc_join ['/etc/fastd', *WI_IF, 'peers']
+        remote: !str_join ['ssh://', *GH_ID ,'/freifunk-mwu/peers-ffwi.git']
+        pidfile: !loc_join ['/var/run', !str_join ['fastd.', *WI_IF, '.pid']]
