@@ -4,10 +4,10 @@ from photon.util.files import read_file
 
 if __name__ == '__main__':
 
-    p = Photon(config='peersync_config.yaml', summary='peersync_summary.yaml', meta='peersync_meta.json', verbose=False)
+    p = Photon(config='ffmwu_config.yaml', summary='ffmwu_summary.yaml', meta='fastdsync_meta.json', verbose=False)
     s = p.settings.get
 
-    for community in s['fastd']:
+    for community in s['common']['communities']:
         git = p.new_git(s['fastd'][community]['local'], remote_url=s['fastd'][community]['remote'])
         git.cleanup
 
