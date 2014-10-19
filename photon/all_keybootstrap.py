@@ -5,9 +5,11 @@ from photon.util.files import write_file
 
 if __name__ == '__main__':
 
-    # p = Photon(config='ffmwu_config.yaml', summary='ffmwu_summary.yaml', meta='keybootstrap_meta.json', verbose=False)
-    p = Photon(config='ffmwu_config.yaml', summary=None                         , meta='keybootstrap_meta.json', verbose=False)
+    p = Photon(config='ffmwu_config.yaml', summary='ffmwu_summary.yaml', meta='keybootstrap_meta.json', verbose=False)
     s = p.settings.get
+
+    from pprint import pprint
+    pprint(s)
 
     if not search_location(s['common']['ssh']['prv']): p.m(
         'generating new private ssh keypair',
@@ -22,5 +24,3 @@ if __name__ == '__main__':
         )
         if pub.get('returncode') == 0:
             write_file(s['common']['ssh']['pub'], pub.get('out'))
-
-

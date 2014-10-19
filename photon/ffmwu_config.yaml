@@ -9,20 +9,20 @@ batman:
         bandwidth: !str_join [*BW_UP, '/', *BW_DN]
 common:
     communities: ['mz', 'wi']
-    gh_ident: &GH_ID 'github'
+    gh_ident: &GH_ID 'github_mwu'
     ssh:
         folder: &S_FL !loc_join ['home_dir', '.ssh']
-        prv: &S_PR !loc_join [*S_FL, !var_join ['hostname', '_rsa']]
+        prv: &S_PR !loc_join [*S_FL, !str_join ['hostname', '_rsa']]
         pub: !str_join [*S_PR, '.pub']
     ecdsa:
         folder: &E_FL !loc_join ['home_dir', '.ecdsa']
-        prv: !loc_join [*E_FL, !var_join ['hostname'], '.prv']
-        pub: !loc_join [*E_FL, !var_join ['hostname'], '.pub']
+        prv: !loc_join [*E_FL, !str_join ['hostname', '.prv']]
+        pub: !loc_join [*E_FL, !str_join ['hostname', '.pub']]
 configs:
     local: &SN_L !loc_join ['data_dir', 'gateway-configs.git']
     remote: !str_join ['ssh://', *GH_ID ,'/freifunk-mwu/gateway-configs.git']
     queue: !loc_join [*SN_L, 'queue.yaml']
-    target: !loc_join [*SN_L, !var_join ['hostname']]
+    target: !loc_join [*SN_L, !str_join ['hostname']]
 exitping:
         addresses:
         - '95.143.172.211' # freifunk-mainz.de
