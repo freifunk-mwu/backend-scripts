@@ -9,6 +9,8 @@ batman:
         bandwidth: !str_join [*BW_UP, '/', *BW_DN]
 common:
     communities: ['mz', 'wi']
+    hostname: !str_join ['hostname']
+    domain: 'freifunk-mwu.de'
     gh_ident: &GH_ID 'github_mwu'
 crypt:
     ssh:
