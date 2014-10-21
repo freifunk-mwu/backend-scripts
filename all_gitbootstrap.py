@@ -3,8 +3,7 @@ from photon import Photon
 from photon.util.locations import search_location, change_location
 from photon.util.files import write_file, read_file
 
-# p = Photon(config='ffmwu_config.yaml', summary='ffmwu_summary.yaml', meta='keybootstrap_meta.json', verbose=False)
-p = Photon(config='ffmwu_config.yaml', summary=None                   , meta='keybootstrap_meta.json', verbose=False)
+p = Photon(config='ffmwu_config.yaml', summary='ffmwu_summary.yaml', meta='gitbootstrap_meta.json', verbose=False)
 s = p.settings.get
 
 def mk_ssh_prv():
