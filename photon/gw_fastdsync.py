@@ -8,7 +8,7 @@ if __name__ == '__main__':
     s = p.settings.get
 
     for community in s['common']['communities']:
-        git = p.new_git(s['fastd'][community]['local'], remote_url=s['fastd'][community]['remote'])
+        git = p.git_handler(s['fastd'][community]['local'], remote_url=s['fastd'][community]['remote'])
         git.cleanup
 
         pid = read_file(s['fastd'][community]['pidfile'])

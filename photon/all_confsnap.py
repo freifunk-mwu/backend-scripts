@@ -8,7 +8,7 @@ if __name__ == '__main__':
     p = Photon(config='ffmwu_config.yaml', summary='ffmwu_summary.yaml', meta='confsnap_meta.json', verbose=True)
     s = p.settings.get
 
-    git = p.new_git(s['configs']['local'], remote_url=s['configs']['remote'])
+    git = p.git_handler(s['configs']['local'], remote_url=s['configs']['remote'])
 
     if p.settings.load('queue', s['configs']['queue']):
 

@@ -6,7 +6,7 @@ if __name__ == '__main__':
     p = Photon(config='ffmwu_config.yaml', summary='ffmwu_summary.yaml', meta='exitping_meta.json', verbose=False)
     s = p.settings.get
 
-    uping, aping = p.new_ping(net_if=s['exitping']['interface']), p.new_ping(net_if=s['exitping']['interface'])
+    uping, aping = p.ping_handler(net_if=s['exitping']['interface']), p.ping_handler(net_if=s['exitping']['interface'])
 
     for url in s['exitping']['urls']: uping.probe = url
     for add in s['exitping']['addresses']: aping.probe = add
