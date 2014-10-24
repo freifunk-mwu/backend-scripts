@@ -8,8 +8,8 @@ if __name__ == '__main__':
 
     uping, aping = p.ping_handler(net_if=s['exitping']['interface']), p.ping_handler(net_if=s['exitping']['interface'])
 
-    for url in s['exitping']['urls']: uping.probe = url
-    for add in s['exitping']['addresses']: aping.probe = add
+    uping.probe = s['exitping']['urls']
+    aping.probe = s['exitping']['addresses']
 
     for community in s['common']['communities']:
         cif = s['batman'][community]['interface']
@@ -23,7 +23,7 @@ if __name__ == '__main__':
             )
         else:
             p.m(
-                '%s - you are indeed connected!\nsetting batman server flag for %s (bw: %s)' %(community, cif, cbw),
+                '%s - you are connected!\nsetting batman server flag for %s (bw: %s)' %(community, cif, cbw),
                 cmdd=dict(cmd='sudo batctl -m %s gw server %s' %(cif, cbw)),
                 more=dict(ping_urls=uping.status, ping_addresses=aping.status),
                 verbose=True

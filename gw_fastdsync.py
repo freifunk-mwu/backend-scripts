@@ -1,6 +1,5 @@
 
 from photon import Photon
-from photon.util.files import read_file
 
 if __name__ == '__main__':
 
@@ -11,12 +10,7 @@ if __name__ == '__main__':
         git = p.git_handler(s['fastd'][community]['local'], remote_url=s['fastd'][community]['remote'])
         git.cleanup
 
-        pid = read_file(s['fastd'][community]['pidfile'])
-        if pid:
-            p.m(
-                '%s - fastd key reload' %(community),
-                cmdd=dict(cmd='sudo kill -HUP %s' %(pid.strip())),
-                verbose=True
-            )
+        fastd = p.signal_handler(s['fastd']['community']['pidfile'])
+        fastd.hup
 
         git.publish
