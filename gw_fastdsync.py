@@ -10,7 +10,7 @@ if __name__ == '__main__':
         git = p.git_handler(s['fastd'][community]['local'], remote_url=s['fastd'][community]['remote'])
         git.cleanup
 
-        fastd = p.signal_handler(s['fastd']['community']['pidfile'])
+        fastd = p.signal_handler(s['fastd'][community]['pidfile'])
         fastd.hup
 
         git.publish

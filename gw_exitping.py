@@ -8,8 +8,7 @@ if __name__ == '__main__':
 
     uping, aping = p.ping_handler(net_if=s['exitping']['interface']), p.ping_handler(net_if=s['exitping']['interface'])
 
-    uping.probe = s['exitping']['urls']
-    aping.probe = s['exitping']['addresses']
+    uping.probe, aping.probe = s['exitping']['urls'], s['exitping']['addresses']
 
     for community in s['common']['communities']:
         cif = s['batman'][community]['interface']
