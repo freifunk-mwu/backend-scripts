@@ -1,10 +1,9 @@
 
-from photon import Photon
+from common.shared import init
 
 if __name__ == '__main__':
 
-    p = Photon(config='ffmwu_config.yaml', summary='ffmwu_summary.yaml', meta='fastdsync_meta.json', verbose=False)
-    s = p.settings.get
+    p, s = init('sync_meshkeys', verbose=True)
 
     for community in s['common']['communities']:
         git = p.git_handler(s['fastd'][community]['local'], remote_url=s['fastd'][community]['remote'])

@@ -1,1 +1,4 @@
 *_summary.yaml
+
+*.pyc
+*.pyo

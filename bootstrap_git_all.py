@@ -1,10 +1,9 @@
 
-from photon import Photon
 from photon.util.locations import search_location, change_location
 from photon.util.files import write_file, read_file
+from common.shared import init
 
-p = Photon(config='ffmwu_config.yaml', summary='ffmwu_summary.yaml', meta='gitbootstrap_meta.json', verbose=False)
-s = p.settings.get
+p, s = init('bootstrap_git', verbose=True)
 
 def mk_ssh_prv():
     return p.m(
