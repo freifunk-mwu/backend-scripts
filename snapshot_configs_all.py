@@ -11,6 +11,7 @@ if __name__ == '__main__':
 
     if p.settings.load('queue', s['configs']['queue']):
 
+        change_location(s['configs']['target'], None, move=True)
         for loc in s['queue'].get('locations'):
             change_location(loc, path.join(s['configs']['target'], loc.lstrip('/')))
 

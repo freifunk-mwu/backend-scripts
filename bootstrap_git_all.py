@@ -46,7 +46,7 @@ Host {gh_ident}
             change_location(s['crypt']['ssh']['conf'], s['crypt']['ssh']['conf_b'])
             write_file(s['crypt']['ssh']['conf'], conf)
         else: p.m('skipping config modification - entry already present')
-        p.m('%s\n\n%s\n' %(ks, pub), verbose=True)
+        p.m('{ln}\n{ks}\n\n{pub}\n{ln}'.format(ln='\n'+'~'*8, ks=ks, pub=pub), verbose=True)
 
 def set_git_config():
     p.m('setting git user.name', cmdd=dict(cmd='git config --global --replace-all user.name "%s"' %(s['common']['hostname'])))
