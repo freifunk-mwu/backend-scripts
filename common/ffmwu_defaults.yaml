@@ -1,0 +1,59 @@
+batman:
+    bw_up: &BW_UP '96MBit'
+    bw_dn: &BW_DN '96MBit'
+    mz:
+        interface: 'mzBAT'
+        bandwidth: !str_join [*BW_UP, '/', *BW_DN]
+    wi:
+        interface: 'wiBAT'
+        bandwidth: !str_join [*BW_UP, '/', *BW_DN]
+common:
+    communities: ['mz', 'wi']
+    hostname: !str_join ['hostname']
+    domain: 'freifunk-mwu.de'
+    gh_ident: &GH_ID 'github_mwu'
+crypt:
+    ssh:
+        folder: &S_FL !loc_join ['home_dir', '.ssh']
+        prv_s: &S_SR !str_join ['hostname', '_rsa']
+        prv: &S_PR !loc_join [*S_FL, *S_SR]
+        pub: !str_join [*S_PR, '.pub']
+        conf: &S_CN !loc_join [*S_FL, 'config']
+        conf_b: !str_join [*S_CN, '_backup_', 'timestamp']
+    ecdsa:
+        folder: &E_FL !loc_join ['home_dir', '.ecdsa']
+        prv: !loc_join [*E_FL, !str_join ['hostname', '.prv']]
+        pub: !loc_join [*E_FL, !str_join ['hostname', '.pub']]
+configs:
+    local: &SN_L !loc_join ['data_dir', 'gateway-configs.git']
+    remote: !str_join ['ssh://', *GH_ID ,'/freifunk-mwu/gateway-configs.git']
+    queue: !loc_join [*SN_L, 'queue.yaml']
+    target: !loc_join [*SN_L, !str_join ['hostname']]
+exitping:
+        addresses:
+        - '95.143.172.211' # freifunk-mainz.de
+        - '95.143.172.219' # freifunk-wiesbaden.de
+        - '144.76.185.220' # cccmz.de
+        - '217.197.80.240' # freifunk.net
+        - '213.73.89.123'  # ccc.de
+        urls:
+        - 'freifunk-mainz.de'
+        - 'freifunk-wiesbaden.de'
+        - 'freifunk-mwu.de'
+        - 'cccmz.de'
+        - 'freifunk.net'
+        - 'ccc.de'
+        - 'penisland.net'
+        interface: 'exitVPN'
+        min_ratio: 0.6
+fastd:
+    mz:
+        interface: &MZ_IF 'mzVPN'
+        local: !loc_join ['/etc/fastd', *MZ_IF, 'peers']
+        remote: !str_join ['ssh://', *GH_ID ,'/freifunk-mwu/peers-ffmz.git']
+        pidfile: !loc_join ['/var/run', !str_join ['fastd.', *MZ_IF, '.pid']]
+    wi:
+        interface: &WI_IF 'wiVPN'
+        local: !loc_join ['/etc/fastd', *WI_IF, 'peers']
+        remote: !str_join ['ssh://', *GH_ID ,'/freifunk-mwu/peers-ffwi.git']
+        pidfile: !loc_join ['/var/run', !str_join ['fastd.', *WI_IF, '.pid']]

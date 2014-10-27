@@ -9,7 +9,7 @@ if __name__ == '__main__':
 
     git = p.git_handler(s['configs']['local'], remote_url=s['configs']['remote'])
 
-    if p.settings.load('queue', s['configs']['queue']):
+    if p.load('queue', s['configs']['queue']):
 
         change_location(s['configs']['target'], None, move=True)
         for loc in s['queue'].get('locations'):
