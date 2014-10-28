@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 
 from photon.util.locations import search_location, change_location
 from photon.util.files import write_file, read_file

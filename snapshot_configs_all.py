@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 
 from os import path
 from photon.util.locations import change_location
