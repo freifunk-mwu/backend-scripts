@@ -1,9 +1,11 @@
 
-from os import path
-from photon import Photon
+def pinit(mname, verbose=True):
 
-def init(mname, verbose=True):
+    from os import path
+    from photon import Photon
+
     cf = path.dirname(__file__)
+    print(cf)
     p = Photon(
         path.join(cf, 'ffmwu_defaults.yaml'),
         config=path.join(cf, 'ffmwu_config.yaml'),

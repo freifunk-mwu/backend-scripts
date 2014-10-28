@@ -1,18 +1,18 @@
 
 from photon.util.locations import search_location, change_location
 from photon.util.files import write_file, read_file
-from common.shared import init
+from common import pinit
 
-p, s = init('bootstrap_git', verbose=True)
+p, s = pinit('bootstrap_git', verbose=True)
 
-def mk_ssh_prv():
+def mkprv_ssh():
     return p.m(
         'generating new private ssh keypair',
         cmdd=dict(cmd='ssh-keygen -t rsa -b 4096 -N "" -f %s' %(s['crypt']['ssh']['prv']), cwd=s['crypt']['ssh']['folder'], verbose=True),
     )
 
-def get_ssh_pub():
-    if not search_location(s['crypt']['ssh']['prv']): mk_ssh_prv()
+def getpub_ssh():
+    if not search_location(s['crypt']['ssh']['prv']): mkprv_ssh()
 
     pub = p.m(
         'generating new public ssh key from private',
@@ -26,9 +26,9 @@ def get_ssh_pub():
 
         return pub.get('out')
 
-def add_github_to_ssh_config():
+def bootstrap_git():
 
-    pub = get_ssh_pub()
+    pub = getpub_ssh()
     if pub:
         conf = read_file(s['crypt']['ssh']['conf'])
         ks = 'Make sure this key is in a github account which has access to required repositories'
@@ -48,11 +48,8 @@ Host {gh_ident}
         else: p.m('skipping config modification - entry already present')
         p.m('{ln}\n{ks}\n\n{pub}\n{ln}'.format(ln='\n'+'~'*8, ks=ks, pub=pub), verbose=True)
 
-def set_git_config():
-    p.m('setting git user.name', cmdd=dict(cmd='git config --global --replace-all user.name "%s"' %(s['common']['hostname'])))
-    p.m('setting git user.email', cmdd=dict(cmd='git config --global --replace-all user.email "%s@%s"' %(s['common']['hostname'], s['common']['domain'])))
+        p.m('setting git user.name', cmdd=dict(cmd='git config --global --replace-all user.name "%s"' %(s['common']['hostname'])))
+        p.m('setting git user.email', cmdd=dict(cmd='git config --global --replace-all user.email "%s@%s"' %(s['common']['hostname'], s['common']['domain'])))
 
 if __name__ == '__main__':
-
-    add_github_to_ssh_config()
-    set_git_config()
+    bootstrap_git()

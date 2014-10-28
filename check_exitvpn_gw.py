@@ -1,9 +1,8 @@
 
-from common.shared import init
+from common import pinit
 
-if __name__ == '__main__':
-
-    p, s = init('check_exitvpn', verbose=True)
+def check_exitvpn():
+    p, s = pinit('check_exitvpn', verbose=True)
 
     uping, aping = p.ping_handler(net_if=s['exitping']['interface']), p.ping_handler(net_if=s['exitping']['interface'])
     uping.probe, aping.probe = s['exitping']['urls'], s['exitping']['addresses']
@@ -36,3 +35,6 @@ if __name__ == '__main__':
                 cmdd=dict(cmd='sudo initctl start isc-dhcp-server'),
                 critical=False,
             )
+
+if __name__ == '__main__':
+    check_exitvpn()
