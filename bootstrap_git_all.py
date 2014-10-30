@@ -1,10 +1,21 @@
 #!/usr/bin/env python3
 
-from photon.util.locations import search_location, change_location
+from photon.util.locations import search_location
 from photon.util.files import write_file, read_file
 from common import pinit
 
 p, s = pinit('bootstrap_git', verbose=True)
+
+DESC = 'Make sure this key is associated with the "freifunkmwu" user on github'
+SSH_TPL = '''\n
+# freifunk-mwu github access
+## ${desc}
+Host ${gh_ident}
+\tUser git
+\tHostname github.com
+\tPreferredAuthentications publickey
+\tIdentityFile ~/.ssh/${prv_s}
+\n'''
 
 def mkprv_ssh():
     return p.m(
@@ -31,26 +42,19 @@ def bootstrap_git():
 
     pub = getpub_ssh()
     if pub:
-        conf = read_file(s['crypt']['ssh']['conf'])
-        ks = 'Make sure this key is in a github account which has access to required repositories'
-        if not 'Host %s' %(s['common']['gh_ident']) in conf:
-            conf += '''\n
-# freifunk-mwu github access
-## {ks}
-Host {gh_ident}
-\tUser git
-\tHostname github.com
-\tPreferredAuthentications publickey
-\tIdentityFile ~/.ssh/{prv_s}
-\n'''.format(ks=ks, gh_ident=s['common']['gh_ident'], prv_s=s['crypt']['ssh']['prv_s'])
-
-            change_location(s['crypt']['ssh']['conf'], s['crypt']['ssh']['conf_b'])
-            write_file(s['crypt']['ssh']['conf'], conf)
-        else: p.m('skipping config modification - entry already present')
-        p.m('{ln}\n{ks}\n\n{pub}\n{ln}'.format(ln='\n'+'~'*8, ks=ks, pub=pub), verbose=True)
+        ct = p.template_handler(SSH_TPL)
+        ct.sub = dict(
+            desc=DESC,
+            gh_ident=s['common']['gh_ident'],
+            prv_s=s['crypt']['ssh']['prv_s']
+        )
+        ct.write(s['crypt']['ssh']['conf'])
 
         p.m('setting git user.name', cmdd=dict(cmd='git config --global --replace-all user.name "%s"' %(s['common']['hostname'])))
         p.m('setting git user.email', cmdd=dict(cmd='git config --global --replace-all user.email "%s@%s"' %(s['common']['hostname'], s['common']['domain'])))
+
+        pt = p.template_handler('${l}${desc}${l}\n${pub} ${local}\n${l}', fields=dict(desc=DESC, pub=pub, local=s['common']['local'], l='\n%s\n' %('~'*8)))
+        p.m(pt.sub, verbose=True)
 
 if __name__ == '__main__':
     bootstrap_git()
