@@ -9,9 +9,9 @@ def snapshot_configs():
 
     git = p.git_handler(s['configs']['local'], remote_url=s['configs']['remote'])
 
-    if p.load('queue', s['configs']['queue']):
+    if p.settings.load('queue', s['configs']['queue']):
 
-        change_location(s['configs']['target'], None, move=True)
+        change_location(s['configs']['target'], False, move=True)
         for loc in s['queue'].get('locations'):
             change_location(loc, path.join(s['configs']['target'], loc.lstrip('/')))
 

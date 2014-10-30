@@ -12,4 +12,4 @@ def pinit(mname, verbose=True):
         meta='%s_meta.json' %(mname),
         verbose=verbose
     )
-    return p, p.settings
+    return p, p.settings.get
