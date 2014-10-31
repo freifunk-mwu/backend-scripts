@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
-from common import pinit
-
 def sync_meshkeys():
+    from common import pinit
+
     p, s = pinit('sync_meshkeys', verbose=True)
 
     for community in s['common']['communities']:

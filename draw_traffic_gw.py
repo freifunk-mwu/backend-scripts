@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
-from os import path
-from common import pinit
-from photon.util.locations import search_location
-
 def draw_traffic():
+    from os import path
+    from common import pinit
+    from photon.util.locations import search_location
+
     p, s = pinit('draw_traffic', verbose=True)
 
     search_location(s['traffic']['output'], create_in=s['traffic']['output'])

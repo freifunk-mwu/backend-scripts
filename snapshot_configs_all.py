@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
-from os import path
-from photon.util.locations import change_location
-from common import pinit
-
 def snapshot_configs():
+    from os import path
+    from photon.util.locations import change_location
+    from common import pinit
+
     p, s = pinit('snapshot_configs', verbose=True)
 
     git = p.git_handler(s['configs']['local'], remote_url=s['configs']['remote'])

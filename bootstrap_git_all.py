@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 
-from photon.util.locations import search_location
-from photon.util.files import write_file, read_file
 from common import pinit
 
 p, s = pinit('bootstrap_git', verbose=True)
@@ -24,6 +22,9 @@ def mkprv_ssh():
     )
 
 def getpub_ssh():
+    from photon.util.locations import search_location
+    from photon.util.files import write_file, read_file
+
     if not search_location(s['crypt']['ssh']['prv']): mkprv_ssh()
 
     pub = p.m(

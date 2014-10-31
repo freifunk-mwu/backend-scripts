@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
-from common import pinit
-
 def check_exitvpn():
+    from common import pinit
+
     p, s = pinit('check_exitvpn', verbose=True)
 
     uping, aping = p.ping_handler(net_if=s['exitping']['interface']), p.ping_handler(net_if=s['exitping']['interface'])
