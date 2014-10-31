@@ -9,10 +9,12 @@ batman:
         bandwidth: !str_join [*BW_UP, '/', *BW_DN]
 common:
     communities: ['mz', 'wi']
-    hostname: !str_join ['hostname']
     domain: &DOMAIN 'freifunk-mwu.de'
     gh_ident: &GH_ID 'github_mwu'
+    hostname: !str_join ['hostname']
+    interface: &MAIN_IF 'eth0'
     local: !str_join ['hostname', '@', *DOMAIN]
+    timestamp: !str_join ['timestamp']
 crypt:
     ssh:
         folder: &S_FL !loc_join ['home_dir', '.ssh']
@@ -44,16 +46,29 @@ exitping:
         - 'freifunk.net'
         - 'ccc.de'
         - 'penisland.net'
-        interface: 'exitVPN'
+        interface: &EXIT_IF 'exitVPN'
         min_ratio: 0.6
 fastd:
     mz:
-        interface: &MZ_IF 'mzVPN'
-        local: !loc_join ['/etc/fastd', *MZ_IF, 'peers']
+        interface: &FASTD_MZ_IF 'mzVPN'
+        local: !loc_join ['/etc/fastd', *FASTD_MZ_IF, 'peers']
         remote: !str_join ['ssh://', *GH_ID ,'/freifunk-mwu/peers-ffmz.git']
-        pidfile: !loc_join ['/var/run', !str_join ['fastd.', *MZ_IF, '.pid']]
+        pidfile: !loc_join ['/var/run', !str_join ['fastd.', *FASTD_MZ_IF, '.pid']]
     wi:
-        interface: &WI_IF 'wiVPN'
-        local: !loc_join ['/etc/fastd', *WI_IF, 'peers']
+        interface: &FASTD_WI_IF 'wiVPN'
+        local: !loc_join ['/etc/fastd', *FASTD_WI_IF, 'peers']
         remote: !str_join ['ssh://', *GH_ID ,'/freifunk-mwu/peers-ffwi.git']
-        pidfile: !loc_join ['/var/run', !str_join ['fastd.', *WI_IF, '.pid']]
+        pidfile: !loc_join ['/var/run', !str_join ['fastd.', *FASTD_WI_IF, '.pid']]
+icvpn:
+    interface: &IC_IF 'icVPN'
+traffic:
+    dbdir: &TR_DB !loc_join ['/var/lib/vnstat']
+    output: &TR_OUT !loc_join ['/var/www/html/traffic']
+    index: !loc_join [*TR_OUT, 'index.html']
+    interfaces: [*MAIN_IF, *EXIT_IF, *IC_IF]
+    types:
+    - ['s', 'summary']
+    - ['m', 'monthly']
+    - ['d', 'daily']
+    - ['h', 'hourly']
+    - ['t', 'top10']
