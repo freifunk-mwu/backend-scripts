@@ -4,6 +4,7 @@ def draw_traffic():
     from os import path
     from common import pinit
     from photon.util.locations import search_location
+    from photon.util.system import get_timestamp
 
     p, s = pinit('draw_traffic', verbose=True)
 
@@ -50,7 +51,7 @@ def draw_traffic():
         path.join(path.dirname(__file__), 'common/traffic.tpl'),
         fields=dict(
             hostname=s['common']['hostname'],
-            timestamp=s['common']['timestamp'],
+            timestamp=get_timestamp(),
             traffic=res
         )
     )

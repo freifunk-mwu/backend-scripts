@@ -14,7 +14,6 @@ common:
     hostname: !str_join ['hostname']
     interface: &MAIN_IF 'eth0'
     local: !str_join ['hostname', '@', *DOMAIN]
-    timestamp: !str_join ['timestamp']
 crypt:
     ssh:
         folder: &S_FL !loc_join ['home_dir', '.ssh']
