@@ -63,18 +63,24 @@ fastd:
 icvpn:
     interface: &IC_IF 'icVPN'
 web:
-    output: &WEB_OUT !loc_join ['/var/www/html']
-    index: !loc_join [*WEB_OUT, 'index.html']
-    system: !loc_join [*WEB_OUT, 'system.html']
-    style: !loc_join [*WEB_OUT, 'style.css']
-traffic:
-    dbdir: &TR_DB !loc_join ['/var/lib/vnstat']
-    output: &TR_OUT !loc_join [*WEB_OUT, 'traffic']
-    index: !loc_join [*TR_OUT, 'index.html']
-    interfaces: [*MAIN_IF, *EXIT_IF, *IC_IF]
-    types:
-    - ['s', 'summary']
-    - ['m', 'monthly']
-    - ['d', 'daily']
-    - ['h', 'hourly']
-    - ['t', 'top10']
+    output: !loc_join ['/var/www/html']
+    system:
+        - uptime
+        - fortune
+        - uname -a
+        - hostname -i
+        - 'ip address show label "*[BR,VPN]"'
+        - lsblk
+        - df -h
+        - free -h
+        - swapon -s
+        - who -H
+    traffic:
+        dbdir: &TR_DB !loc_join ['/var/lib/vnstat']
+        interfaces: [*MAIN_IF, *EXIT_IF, *IC_IF]
+        types:
+        - ['s', 'summary']
+        - ['m', 'monthly']
+        - ['d', 'daily']
+        - ['h', 'hourly']
+        - ['t', 'top10']
