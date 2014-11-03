@@ -12,6 +12,7 @@ def snapshot_configs():
     git.cleanup
 
     if p.settings.load('queue', s['configs']['queue']):
+        p.s2m
 
         change_location(s['configs']['target'], False, move=True)
 
