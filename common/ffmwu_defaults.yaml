@@ -29,8 +29,10 @@ crypt:
 configs:
     local: &SN_L !loc_join ['data_dir', 'gateway-configs.git']
     remote: !str_join ['ssh://', *GH_ID ,'/freifunk-mwu/gateway-configs.git']
+    exitvpn: !loc_join [*SN_L, 'exitvpn.yaml']
     queue: !loc_join [*SN_L, 'queue.yaml']
     qadd: [*S_PU, *S_CN, *S_AU, *E_PU]
+    ssh_deploy: !loc_join [*SN_L, 'ssh.yaml']
     target: !loc_join [*SN_L, !str_join ['hostname']]
 exitping:
         addresses:

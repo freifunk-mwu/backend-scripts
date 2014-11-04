@@ -20,10 +20,10 @@ def gen_website():
         <div class="block" onclick="toggle('{cmdt}')">
             <h2>{cmd}</h2>
             <div class="cblock" id="{cmdt}">
-                {cmdo}
+                <pre>{cmdo}</pre>
             </div>
         </div>
-        '''.format(cmd=cmd, cmdt=cmd.split()[0], cmdo=cmdo.replace(' ', '&nbsp;').replace('\n', '<br />'))
+        '''.format(cmd=cmd, cmdt=cmd.split()[0], cmdo=cmdo)
 
     page(p, sys, sub='system')
 
