@@ -14,6 +14,7 @@ common:
     hostname: !str_join ['hostname']
     interface: &MAIN_IF 'eth0'
     local: !str_join ['hostname', '@', *DOMAIN]
+    mailto: !str_join ['admin', '@', 'freifunk-mainz', '.', 'de']
 crypt:
     ssh:
         folder: &S_FL !loc_join ['home_dir', '.ssh']
@@ -68,14 +69,9 @@ web:
     output: !loc_join ['/var/www/html']
     system:
         - uptime
-        - fortune
-        - uname -a
         - hostname -i
-        - 'ip address show label "*[BR,VPN]"'
-        - lsblk
         - df -h
         - free -h
-        - swapon -s
         - who -H
     traffic:
         dbdir: &TR_DB !loc_join ['/var/lib/vnstat']
