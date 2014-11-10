@@ -3,7 +3,6 @@
 def nagg_exitvpn_accouts():
     from common import pinit
     from datetime import datetime, timedelta
-    from yaml import dump
 
     p, s = pinit('nagg_exitvpn_accouts', verbose=True)
 
@@ -25,7 +24,7 @@ def nagg_exitvpn_accouts():
 
     p.m('results', more=res)
 
-    if res['good'] and now.weekday() == s['exitvpn']['conf']['digestday'] or res['warning']:
+    if now.weekday() == s['exitvpn']['conf']['digestday'] or res['warning']:
         pl = 'Achtung! VPN Account läuft aus' if res['warning'] else 'VPN Wochenbericht'
         mail = p.mail_handler(
             to=s['common']['mailto'],
@@ -34,8 +33,9 @@ def nagg_exitvpn_accouts():
             punchline=pl,
             add_settings=False
         )
-        mail.text = '~' * 8
-        mail.text = dump(res)
+        mail.text = ''
+        mail.text = res
+        mail.text = 'Do not forget to update <a href="https://github.com/freifunk-mwu/gateway-configs.git">gateway-config\'s</a> <i>exitvpn.yaml</i>!'
         mail.send
 
 if __name__ == '__main__':
