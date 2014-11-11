@@ -26,10 +26,9 @@ def draw_traffic():
                 critical=False
             )
 
-            ii = p.template_handler('<img src="${image}" alt="${interface} - ${itype}" /><br />', fields=dict(interface=i, itype=itype, image=image))
-            r += ii.sub
+            r += p.template_handler('<img src="${image}" alt="${interface} - ${itype}" /><br />', fields=dict(interface=i, itype=itype, image=image)).sub
 
-        ib = p.template_handler(
+        traffic += p.template_handler(
             '''
     <div class="ifblock" onclick="toggle('${interface}')">
         <h2>${interface}</h2>
@@ -38,8 +37,7 @@ def draw_traffic():
         </div>
     </div>
 ''', fields=dict(interface=i, images=r)
-        )
-        traffic += ib.sub
+        ).sub
 
     page(p, traffic, sub='traffic')
 

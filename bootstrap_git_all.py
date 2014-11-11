@@ -31,31 +31,32 @@ def getpub_ssh():
         'generating new public ssh key from private',
         cmdd=dict(cmd='ssh-keygen -f %s -y' %(s['crypt']['ssh']['prv']), cwd=s['crypt']['ssh']['folder'])
     )
-    if pub.get('returncode') == 0:
+    if not pub.get('returncode') == 0: p.m('Error creating public ssh key', state=False)
 
-        if read_file(s['crypt']['ssh']['pub']) != pub.get('out'):
-            write_file(s['crypt']['ssh']['pub'], pub.get('out'))
-            p.m('wrote public ssh key', more=pub)
+    if read_file(s['crypt']['ssh']['pub']) != pub.get('out'):
+        write_file(s['crypt']['ssh']['pub'], pub.get('out'))
+        p.m('wrote public ssh key', more=pub)
 
-        return pub.get('out')
+    return pub.get('out')
 
 def bootstrap_git():
 
     pub = getpub_ssh()
-    if pub:
-        ct = p.template_handler(SSH_TPL)
-        ct.sub = dict(
-            desc=DESC,
-            gh_ident=s['common']['gh_ident'],
-            prv_s=s['crypt']['ssh']['prv_s']
-        )
-        ct.write(s['crypt']['ssh']['conf'])
+    if not pub: p.m('Can not bootstrap', state=True)
 
-        p.m('setting git user.name', cmdd=dict(cmd='git config --global --replace-all user.name "%s"' %(s['common']['hostname'])))
-        p.m('setting git user.email', cmdd=dict(cmd='git config --global --replace-all user.email "%s@%s"' %(s['common']['hostname'], s['common']['domain'])))
+    ct = p.template_handler(SSH_TPL)
+    ct.sub = dict(
+        desc=DESC,
+        gh_ident=s['common']['gh_ident'],
+        prv_s=s['crypt']['ssh']['prv_s']
+    )
+    ct.write(s['crypt']['ssh']['conf'])
 
-        pt = p.template_handler('${l}${desc}${l}\n${pub} ${local}\n${l}', fields=dict(desc=DESC, pub=pub, local=s['common']['local'], l='\n%s\n' %('~'*8)))
-        p.m(pt.sub, verbose=True)
+    p.m('setting git user.name', cmdd=dict(cmd='git config --global --replace-all user.name "%s"' %(s['common']['hostname'])))
+    p.m('setting git user.email', cmdd=dict(cmd='git config --global --replace-all user.email "%s@%s"' %(s['common']['hostname'], s['common']['domain'])))
+
+    pt = p.template_handler('${l}${desc}${l}\n${pub} ${local}\n${l}', fields=dict(desc=DESC, pub=pub, local=s['common']['local'], l='\n%s\n' %('~'*8)))
+    p.m(pt.sub, verbose=True)
 
 if __name__ == '__main__':
     bootstrap_git()

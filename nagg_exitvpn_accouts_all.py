@@ -8,14 +8,13 @@ def nagg_exitvpn_accouts():
 
     p.git_handler(s['configs']['local'], remote_url=s['configs']['remote'])
     if not p.settings.load('exitvpn', s['configs']['exitvpn']):
-        p.m('could not load exitvpn', more=dict(exitvpn=s['configs']['exitvpn']), state=True)
+        p.m('could not load exitvpn from git', more=dict(exitvpn=s['configs']['exitvpn']), state=True)
     p.s2m
 
     res=dict(overdue=list(), warning=list(), good=list())
     now = datetime.now()
 
     for gw in sorted(s['exitvpn']['gateways'].keys()):
-        p.m('checking %s' %(gw))
         if s['exitvpn']['gateways'][gw].get('until'):
             until = datetime.strptime(s['exitvpn']['gateways'][gw]['until'], s['exitvpn']['conf']['date_format'])
             delta = until - now
