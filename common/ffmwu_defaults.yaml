@@ -65,6 +65,22 @@ fastd:
         pidfile: !loc_join ['/var/run', !str_join ['fastd.', *FASTD_WI_IF, '.pid']]
 icvpn:
     interface: &IC_IF 'icVPN'
+    bird:
+        scripts:
+            remote: 'https://github.com/freifunk/icvpn-scripts'
+            local: &BIRD_SCR !loc_join ['data_dir', 'icvpn-scripts.git']
+        data:
+            remote: 'https://github.com/freifunk/icvpn-meta'
+            local: !loc_join [*BIRD_SCR, 'data']
+        confdir: &BIRD_DIR  '/etc/bird/'
+        backups: !loc_join [*BIRD_DIR, 'backups']
+        ip_ver:
+            4:
+                conf: !loc_join [*BIRD_DIR, 'ebgp_peers_v4.inc']
+                exec: 'bird'
+            6:
+                conf: !loc_join [*BIRD_DIR, 'ebgp_peers_v6.inc']
+                exec: 'bird6'
     tinc:
         remote: 'https://github.com/freifunk/icvpn'
         local: &TINC_DIR '/etc/tinc/icVPN'
