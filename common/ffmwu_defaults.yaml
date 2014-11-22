@@ -65,6 +65,17 @@ fastd:
         pidfile: !loc_join ['/var/run', !str_join ['fastd.', *FASTD_WI_IF, '.pid']]
 icvpn:
     interface: &IC_IF 'icVPN'
+    tinc:
+        remote: 'https://github.com/freifunk/icvpn'
+        local: &TINC_DIR '/etc/tinc/icVPN'
+        backups: !loc_join [*TINC_DIR, 'backups']
+        conf: !loc_join [*TINC_DIR, 'tinc.conf']
+        hosts: !loc_join [*TINC_DIR, 'hosts']
+        pidfile: !loc_join ['/var/run', !str_join ['tinc.', *IC_IF, '.pid']]
+        iamdb: # :)
+            hinterschinken: 'wiesdden2'
+            lotuswurzel: 'wiesbaden1'
+            spinat: 'mainz1'
 web:
     output: !loc_join ['/var/www/html']
     system:
@@ -75,7 +86,7 @@ web:
         - who -H
     traffic:
         dbdir: &TR_DB !loc_join ['/var/lib/vnstat']
-        interfaces: [*MAIN_IF, *EXIT_IF, *IC_IF]
+        interfaces: [*MAIN_IF, *EXIT_IF, *IC_IF] # plus all fastd interfaces
         types:
         - ['s', 'summary']
         - ['m', 'monthly']
