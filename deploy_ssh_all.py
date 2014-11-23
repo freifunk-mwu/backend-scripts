@@ -12,9 +12,9 @@ if __name__ == '__main__':
         p.m('could not load ssh_deploy', more=dict(ssh_deploy=s['configs']['ssh_deploy']), state=True)
     p.s2m
 
-    a.add_argument('mtype', action='store', choices=s['ssh_deploy'].keys() - ['keys'])
+    a.add_argument('mtype', action='store', choices=s['ssh_deploy'].keys())
     a = a.parse_args()
 
     for key in s['ssh_deploy'][a.mtype]:
-        ct = p.template_handler('%s\n' %(key))
+        ct = p.template_handler('%s\n' %(s['ssh_deploy'][a.mtype][key]))
         ct.write(s['crypt']['ssh']['authorized'])
