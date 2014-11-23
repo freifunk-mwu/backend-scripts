@@ -7,7 +7,7 @@ def update_bird_conf():
 
     p, s = pinit('update_bird_conf', verbose=True)
 
-    for r in ['scripts', 'data']:
+    for r in ['scripts', 'meta']:
         p.git_handler(s['icvpn']['bird'][r]['local'], remote_url=s['icvpn']['bird'][r]['remote'])._pull
 
 
@@ -17,7 +17,7 @@ def update_bird_conf():
 
         bc.sub = dict(conf=p.m(
             'genarating v%s bgp conf' %(v),
-            cmdd=dict(cmd='./mkbgp -f bird -%s -x mainz -x wiesbaden -d ebgp_inc' %(v), cwd=s['icvpn']['bird']['scripts']['local'])
+            cmdd=dict(cmd='./mkbgp -f bird -%s -s %s -x mainz -x wiesbaden -d ebgp_inc' %(v, s['icvpn']['bird']['meta']), cwd=s['icvpn']['bird']['scripts']['local'])
         ).get('out'))
 
         conf = s['icvpn']['bird']['ip_ver'][v]['conf']
@@ -26,7 +26,7 @@ def update_bird_conf():
             bc.write(conf, append=False)
 
             p.m(
-                'reloading daemon',
+                'reloading v%s daemon' %(v),
                 cmdd=dict(cmd='sudo service %s reload' %(s['icvpn']['bird']['ip_ver'][v]['exec']))
             )
 

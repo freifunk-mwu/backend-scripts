@@ -68,10 +68,10 @@ icvpn:
     bird:
         scripts:
             remote: 'https://github.com/freifunk/icvpn-scripts'
-            local: &BIRD_SCR !loc_join ['data_dir', 'icvpn-scripts.git']
-        data:
+            local: !loc_join ['data_dir', 'icvpn-scripts.git']
+        meta:
             remote: 'https://github.com/freifunk/icvpn-meta'
-            local: !loc_join [*BIRD_SCR, 'data']
+            local: !loc_join ['data_dir', 'icvpn-meta.git']
         confdir: &BIRD_DIR  '/etc/bird/'
         backups: !loc_join [*BIRD_DIR, 'backups']
         ip_ver:
