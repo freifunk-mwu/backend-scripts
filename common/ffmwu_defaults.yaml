@@ -89,7 +89,7 @@ icvpn:
         hosts: !loc_join [*TINC_DIR, 'hosts']
         pidfile: !loc_join ['/var/run', !str_join ['tinc.', *IC_IF, '.pid']]
         iamdb: # :)
-            hinterschinken: 'wiesdden2'
+            hinterschinken: 'wiesbaden2'
             lotuswurzel: 'wiesbaden1'
             spinat: 'mainz1'
 web:
