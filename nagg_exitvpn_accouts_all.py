@@ -34,7 +34,7 @@ def nagg_exitvpn_accouts():
         )
         mail.text = ''
         mail.text = res
-        mail.text = 'Do not forget to update <a href="https://github.com/freifunk-mwu/gateway-configs.git">gateway-config\'s</a> <i>exitvpn.yaml</i>!'
+        mail.text = 'Do not forget to update the exitvpn.yaml ( https://github.com/freifunk-mwu/gateway-configs.git )'
         mail.send
 
 if __name__ == '__main__':
