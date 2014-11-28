@@ -55,7 +55,7 @@ def bootstrap_git():
     p.m('setting git user.name', cmdd=dict(cmd='git config --global --replace-all user.name "%s"' %(s['common']['hostname'])))
     p.m('setting git user.email', cmdd=dict(cmd='git config --global --replace-all user.email "%s@%s"' %(s['common']['hostname'], s['common']['domain'])))
 
-    pt = p.template_handler('${l}${desc}${l}\n${pub} ${local}\n${l}', fields=dict(desc=DESC, pub=pub, local=s['common']['local'], l='\n%s\n' %('~'*8)))
+    pt = p.template_handler('${l}${desc}${l}\n${pub} ${local}\n${l}', fields=dict(desc=DESC, pub=pub, local=s['common']['mailto']['local'], l='\n%s\n' %('~'*8)))
     p.m(pt.sub, verbose=True)
 
 if __name__ == '__main__':

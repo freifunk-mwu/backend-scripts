@@ -13,8 +13,10 @@ common:
     gh_ident: &GH_ID 'github_mwu'
     hostname: !str_join ['hostname']
     interface: &MAIN_IF 'eth0'
-    local: !str_join ['hostname', '@', *DOMAIN]
-    mailto: !str_join ['admin', '@', 'freifunk-mainz', '.', 'de']
+    mailto:
+        admin: !str_join ['admin', '@', *DOMAIN]
+        local: !str_join ['hostname', '@', *DOMAIN]
+        kontakt: !str_join ['kontakt', '@', 'freifunk-mainz', '.', 'de']
 crypt:
     ssh:
         folder: &S_FL !loc_join ['home_dir', '.ssh']

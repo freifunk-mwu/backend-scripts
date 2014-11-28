@@ -26,8 +26,9 @@ def nagg_exitvpn_accouts():
     if now.weekday() == s['exitvpn']['conf']['digestday'] or res['warning']:
         pl = 'Achtung! VPN Account läuft aus' if res['warning'] else 'VPN Wochenbericht'
         mail = p.mail_handler(
-            to=s['common']['mailto'],
-            sender=s['common']['local'],
+            to=s['common']['mailto']['admin'],
+            cc=s['common']['mailto']['kontakt'],
+            sender=s['common']['mailto']['local'],
             subject='photon exitVPN notify',
             punchline=pl,
             add_settings=False
