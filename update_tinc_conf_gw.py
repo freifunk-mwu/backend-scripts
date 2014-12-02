@@ -8,7 +8,7 @@ def update_tinc_conf():
 
     p, s = pinit('update_tinc_conf', verbose=True)
 
-    p.git_handler(s['icvpn']['tinc']['local'], remote_url=s['icvpn']['tinc']['remote'])._pull
+    p.git_handler(s['icvpn']['tinc']['local'], remote_url=s['icvpn']['tinc']['remote'])._pull()
 
     iam = s['icvpn']['tinc']['iamdb'][s['common']['hostname']] if s['common']['hostname'] in s['icvpn']['tinc']['iamdb'] else None
     if not iam: p.m('Host not present in configuration!', more=dict(host=s['common']['hostname']), state=True)

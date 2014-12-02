@@ -8,8 +8,7 @@ def update_bird_conf():
     p, s = pinit('update_bird_conf', verbose=True)
 
     for r in ['scripts', 'meta']:
-        p.git_handler(s['icvpn']['bird'][r]['local'], remote_url=s['icvpn']['bird'][r]['remote'])._pull
-
+        p.git_handler(s['icvpn']['bird'][r]['local'], remote_url=s['icvpn']['bird'][r]['remote'])._pull()
 
     for v in s['icvpn']['bird']['ip_ver']:
 
