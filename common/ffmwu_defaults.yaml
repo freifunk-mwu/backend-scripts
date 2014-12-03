@@ -93,7 +93,7 @@ icvpn:
         iamdb: # :)
             hinterschinken: 'wiesbaden2'
             lotuswurzel: 'wiesbaden1'
-            spinat: 'mainz1'
+            spinat: 'mainz2'
 web:
     output: !loc_join ['/var/www/html']
     system:
