@@ -8,6 +8,7 @@ def gen_website():
     p, s = pinit('gen_website', verbose=True)
 
     main = '<div class="block"><a href="firmware">Firmware</a></div>'  if path.exists(path.join(s['web']['output'], 'firmware')) else ''
+    main += '<div class="block"><a href="_archive">Firmware Archive</a></div>'  if path.exists(path.join(s['web']['output'], '_archive')) else ''
     main += '<div class="block"><a href="traffic">Traffic</a></div>'  if path.exists(path.join(s['web']['output'], 'traffic')) else ''
     main += '<div class="block"><a href="system">System Statistics</a></div>'
 
