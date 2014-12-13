@@ -11,7 +11,6 @@ def update_bird_conf():
     '''
 
     from photon.util.files import read_file
-    from photon.util.locations import backup_location
     from common import pinit
 
     # Photon Instanz, und deren Settings aus common.pinit holen
@@ -45,9 +44,7 @@ def update_bird_conf():
         # Hat sich dieser gegenüber der momentan aktiven Konfiguration (``read_file``) geändert (``!=``)..
         conf = s['icvpn']['bird']['ip_ver'][v]['conf']
         if bc.sub != read_file(conf):
-            # .. wird erstmal ein Backup weggeschrieben ..
-            backup_location(conf, s['icvpn']['bird']['backups'])
-            # .. um die Konfiguration danach mit der aus dem Template-Handler (``bc.write``) zu ersetzen (``append=False``).
+            # .. wird die Konfiguration danach mit der aus dem Template-Handler (``bc.write``) ersetzt (``append=False``).
             bc.write(conf, append=False)
 
             # Leider lässt sich bird nicht mittels Signalen dazu veranlassen die Konfiguration einzulesen.

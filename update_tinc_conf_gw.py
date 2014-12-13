@@ -12,7 +12,6 @@ def update_tinc_conf():
 
     from os import listdir, path
     from photon.util.files import read_file
-    from photon.util.locations import backup_location
     from common import pinit
 
     # Photon Instanz, und deren Settings aus common.pinit holen
@@ -69,9 +68,7 @@ def update_tinc_conf():
     # ``tc.sub`` setzt alle unter ``fields`` hinterlegte Werte in das Template ein und gibt dieses als String zurück.
     # Hat sich dieser gegenüber der momentan aktiven Konfiguration (``read_file``) geändert (``!=``)..
     if tc.sub != read_file(s['icvpn']['tinc']['conf']):
-        # .. wird erstmal ein Backup weggeschrieben ..
-        backup_location(s['icvpn']['tinc']['conf'], s['icvpn']['tinc']['backups'])
-        # .. um die Konfiguration danach mit der aus dem Template-Handler (``bc.write``) zu ersetzen (``append=False``).
+        # .. wird die Konfiguration danach mit der aus dem Template-Handler (``bc.write``) ersetzt (``append=False``).
         tc.write(s['icvpn']['tinc']['conf'], append=False)
 
         # Der ``signal_handler`` liest beim Start das angegebene ``pidfile`` ein, und ermittelt so

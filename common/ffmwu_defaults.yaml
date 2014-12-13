@@ -75,7 +75,6 @@ icvpn:
             remote: 'https://github.com/freifunk/icvpn-meta'
             local: !loc_join ['data_dir', 'icvpn-meta.git']
         confdir: &BIRD_DIR  '/etc/bird/'
-        backups: !loc_join [*BIRD_DIR, 'backups']
         ip_ver:
             4:
                 conf: !loc_join [*BIRD_DIR, 'ebgp_peers_v4.inc']
@@ -86,7 +85,6 @@ icvpn:
     tinc:
         remote: 'https://github.com/freifunk/icvpn'
         local: &TINC_DIR '/etc/tinc/icVPN'
-        backups: !loc_join [*TINC_DIR, 'backups']
         conf: !loc_join [*TINC_DIR, 'tinc.conf']
         hosts: !loc_join [*TINC_DIR, 'hosts']
         pidfile: !loc_join ['/var/run', !str_join ['tinc.', *IC_IF, '.pid']]
