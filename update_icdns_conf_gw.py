@@ -33,7 +33,7 @@ def update_icdns_conf():
     # Der Ausgabe-String (``get('out')``) wird jedenfalls mit ``bc.sub`` unter dem Namen ``conf`` abgelegt.
     bc.sub = dict(conf=p.m(
         'genarating dns conf',
-        cmdd=dict(cmd='./mkdns -f bind -s %s -x mainz -x wiesbaden' %(s['icvpn']['icdns']['meta']), cwd=s['icvpn']['icdns']['scripts']['local'])
+        cmdd=dict(cmd='./mkdns -f bind -s %s -x mainz -x wiesbaden' %(s['icvpn']['icdns']['meta']['local']), cwd=s['icvpn']['icdns']['scripts']['local'])
     ).get('out'))
 
     # ``bc.sub`` setzt alle hinterlegten Werte (``conf``) in das Template ein und gibt dieses als String zurück.
