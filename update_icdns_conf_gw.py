@@ -46,7 +46,7 @@ def update_icdns_conf():
         # reload
         p.m(
             'reloading dns daemon',
-            cmdd=dict(cmd='rndc reload')
+            cmdd=dict(cmd='sudo rndc reload')
         )
 
 if __name__ == '__main__':
