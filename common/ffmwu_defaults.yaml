@@ -82,6 +82,15 @@ icvpn:
             6:
                 conf: !loc_join [*BIRD_DIR, 'ebgp_peers_v6.inc']
                 exec: 'bird6'
+    icdns:
+        scripts:
+            remote: 'https://github.com/freifunk/icvpn-scripts'
+            local: !loc_join ['data_dir', 'icvpn-scripts.git']
+        meta:
+            remote: 'https://github.com/freifunk/icvpn-meta'
+            local: !loc_join ['data_dir', 'icvpn-meta.git']
+        confdir: &BIRD_DIR  '/etc/bind/'
+        conf: !loc_join [*BIRD_DIR, 'named.conf.icvpn']
     tinc:
         remote: 'https://github.com/freifunk/icvpn'
         local: &TINC_DIR '/etc/tinc/icVPN'
