@@ -89,8 +89,8 @@ icvpn:
         meta:
             remote: 'https://github.com/freifunk/icvpn-meta'
             local: !loc_join ['data_dir', 'icvpn-meta.git']
-        confdir: &BIRD_DIR  '/etc/bind/'
-        conf: !loc_join [*BIRD_DIR, 'named.conf.icvpn']
+        confdir: &ICDNS_DIR  '/etc/bind/'
+        conf: !loc_join [*ICDNS_DIR, 'named.conf.icvpn']
     tinc:
         remote: 'https://github.com/freifunk/icvpn'
         local: &TINC_DIR '/etc/tinc/icVPN'
