@@ -88,6 +88,7 @@ icvpn:
         conf: !loc_join [*TINC_DIR, 'tinc.conf']
         hosts: !loc_join [*TINC_DIR, 'hosts']
         pidfile: !loc_join ['/var/run', !str_join ['tinc.', *IC_IF, '.pid']]
+        exec: 'tinc'
         iamdb: # :)
             hinterschinken: 'wiesbaden2'
             lotuswurzel: 'wiesbaden1'

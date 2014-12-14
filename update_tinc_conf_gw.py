@@ -71,13 +71,13 @@ def update_tinc_conf():
         # .. wird die Konfiguration danach mit der aus dem Template-Handler (``bc.write``) ersetzt (``append=False``).
         tc.write(s['icvpn']['tinc']['conf'], append=False)
 
-        # Der ``signal_handler`` liest beim Start das angegebene ``pidfile`` ein, und ermittelt so
-        # die Prozess-ID
-        tinc = p.signal_handler(s['icvpn']['tinc']['pidfile'])
-        # Letzter Schritt: dem Prozess im Signal-Handler ein ``SIGHUP`` schicken
-        # tinc liest daraufhin die Konfiguration neu ein, und passt seine Verbindungen entsprechend an..
-        # (steht zumindest so in der man-page ;)
-        tinc.hup
+        # Offenbar ist leider nur ein restart die wirklich stabile Variante,
+        # tinc zum Beachten der neuen config zu bringen _und_ überhaupt
+        # sicherzustellen, dass tinc auch läuft.
+        p.m(
+            'restarting tinc daemon',
+            cmdd=dict(cmd='sudo service %s restart' %(s['icvpn']['tinc']['exec']))
+        )
 
 if __name__ == '__main__':
     update_tinc_conf()
