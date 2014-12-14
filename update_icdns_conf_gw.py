@@ -4,10 +4,10 @@ def update_icdns_conf():
     '''
         Jetzt mit Kommentaren!
 
-        Ziel des Scripts ist es, eine Konfiguration für bird zu generieren, damit das Gateway am icvpn teilnehmen kann.
+        Ziel des Scripts ist es, eine Konfiguration für bind zu generieren, damit das Gateway am icvpn teilnehmen kann.
 
         Diese Script läuft periodisch, um den jeweils aktuellen Stand aus icvpn Repository in der Konfiguration abzubilden.
-        Danach wird bird neu gestartet.
+        Danach wird bind dazu veranlasst die Konfiguration neu einzulesen und zu laden.
     '''
 
     from photon.util.files import read_file
@@ -25,7 +25,7 @@ def update_icdns_conf():
     # Der Inhalt der Templates ist nur eine Variable: ``conf``
     bc = p.template_handler('${conf}')
 
-    # Mit ``p.m`` wird das ``mkbgp`` Script aus dem icvpn-meta Repository aufgerufen
+    # Mit ``p.m`` wird das ``mkdns`` Script aus dem icvpn-meta Repository aufgerufen
     # Im ``cmdd`` steht der eigentliche Aufruf (``cmd``) sowie der Pfad (``cwd``) im dem das Kommando ausgeführt wird
     # Schlägt das Kommando fehl, schaltet Photon den ganzen Python-Interpreter mit hübsch Fehlermeldung ab.
     # Ansonsten: Vor Augen halten, was hier passiert: Im Python 3 Interpreter innerhalb einer Shell läuft diese Script hier,
