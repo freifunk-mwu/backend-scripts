@@ -49,9 +49,10 @@ def update_bird_conf():
 
             # Leider lässt sich bird nicht mittels Signalen dazu veranlassen die Konfiguration einzulesen.
             # Also wird mit ``p.m`` auf den ``service`` Befehl vom Betriebssystem drunter zurückgegriffen:
+            # ... besser doch die harte Tour (restart) ...
             p.m(
-                'reloading v%s daemon' %(v),
-                cmdd=dict(cmd='sudo service %s reload' %(s['icvpn']['bird']['ip_ver'][v]['exec']))
+                'restarting v%s daemon' %(v),
+                cmdd=dict(cmd='sudo service %s restart' %(s['icvpn']['bird']['ip_ver'][v]['exec']))
             )
 
 if __name__ == '__main__':
