@@ -37,7 +37,7 @@ def update_bird_conf():
         # Der Ausgabe-String (``get('out')``) wird jedenfalls mit ``bc.sub`` unter dem Namen ``conf`` abgelegt.
         bc.sub = dict(conf=p.m(
             'genarating v%s bgp conf' %(v),
-            cmdd=dict(cmd='./mkbgp -f bird -%s -s %s -x mainz -x wiesbaden -d ebgp_inc' %(v, s['icvpn']['bird']['meta']), cwd=s['icvpn']['bird']['scripts']['local'])
+            cmdd=dict(cmd='./mkbgp -f bird -%s -s %s -x mainz -x wiesbaden -d ebgp_inc' %(v, s['icvpn']['bird']['meta']['local']), cwd=s['icvpn']['bird']['scripts']['local'])
         ).get('out'))
 
         # ``bc.sub`` setzt alle hinterlegten Werte (``conf``) in das Template ein und gibt dieses als String zurück.
