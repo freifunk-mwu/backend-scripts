@@ -36,8 +36,8 @@ def update_bird_conf():
         # welches eine weitere Shell startet um darin ein Python2 Script auszuführen. Dazu noch ohne den Code vorher zu prüfen..
         # Der Ausgabe-String (``get('out')``) wird jedenfalls mit ``bc.sub`` unter dem Namen ``conf`` abgelegt.
         bc.sub = dict(conf=p.m(
-            'genarating v%s bgp conf' %(v),
-            cmdd=dict(cmd='./mkbgp -f bird -%s -s %s -x mainz -x wiesbaden -d ebgp_inc' %(v, s['icvpn']['bird']['meta']['local']), cwd=s['icvpn']['bird']['scripts']['local'])
+            'generating v%s bgp conf' %(v),
+            cmdd=dict(cmd='./mkbgp -f bird -%s -s %s -x mainz -x wiesbaden -d ebgp_ic' %(v, s['icvpn']['bird']['meta']['local']), cwd=s['icvpn']['bird']['scripts']['local'])
         ).get('out'))
 
         # ``bc.sub`` setzt alle hinterlegten Werte (``conf``) in das Template ein und gibt dieses als String zurück.
