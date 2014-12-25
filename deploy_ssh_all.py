@@ -4,17 +4,17 @@ if __name__ == '__main__':
     from common import pinit
     from argparse import ArgumentParser
 
-    a = ArgumentParser(prog='deploy_ssh')
-    p, s = pinit('deploy_ssh', verbose=True)
+    argp = ArgumentParser(prog='deploy_ssh')
+    photon, settings = pinit('deploy_ssh', verbose=True)
 
-    p.git_handler(s['configs']['local'], remote_url=s['configs']['remote'])
-    if not p.settings.load('ssh_deploy', s['configs']['ssh_deploy']):
-        p.m('could not load ssh_deploy', more=dict(ssh_deploy=s['configs']['ssh_deploy']), state=True)
-    p.s2m
+    photon.git_handler(settings['configs']['local'], remote_url=settings['configs']['remote'])
+    if not photon.settings.load('ssh_deploy', settings['configs']['ssh_deploy']):
+        photon.m('could not load ssh_deploy', more=dict(ssh_deploy=settings['configs']['ssh_deploy']), state=True)
+    photon.s2m
 
-    a.add_argument('mtype', action='store', choices=s['ssh_deploy'].keys())
-    a = a.parse_args()
+    argp.add_argument('mtype', action='store', choices=settings['ssh_deploy'].keys())
+    argp = argp.parse_args()
 
-    for key in s['ssh_deploy'][a.mtype]:
-        ct = p.template_handler('%s\n' %(s['ssh_deploy'][a.mtype][key]))
-        ct.write(s['crypt']['ssh']['authorized'])
+    for key in settings['ssh_deploy'][argp.mtype]:
+        ct = photon.template_handler('%s\n' %(settings['ssh_deploy'][argp.mtype][key]))
+        ct.write(settings['crypt']['ssh']['authorized'])
