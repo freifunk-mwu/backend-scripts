@@ -5,18 +5,18 @@ def gen_website():
     from common import pinit
     from common.html import page
 
-    p, s = pinit('gen_website', verbose=True)
+    photon, settings = pinit('gen_website', verbose=True)
 
-    main = '<div class="block"><a href="firmware">Firmware</a></div>'  if path.exists(path.join(s['web']['output'], 'firmware')) else ''
-    main += '<div class="block"><a href="_archive">Firmware Archive</a></div>'  if path.exists(path.join(s['web']['output'], '_archive')) else ''
-    main += '<div class="block"><a href="traffic">Traffic</a></div>'  if path.exists(path.join(s['web']['output'], 'traffic')) else ''
-    main += '<div class="block"><a href="system">System Statistics</a></div>'
+    main = '\n<div class="block"><a href="firmware">Firmware</a></div>'  if path.exists(path.join(settings['web']['output'], 'firmware')) else ''
+    main += '\n<div class="block"><a href="_archive">Firmware Archive</a></div>'  if path.exists(path.join(settings['web']['output'], '_archive')) else ''
+    main += '\n<div class="block"><a href="traffic">Traffic</a></div>'  if path.exists(path.join(settings['web']['output'], 'traffic')) else ''
+    main += '\n<div class="block"><a href="system">System Statistics</a></div>'
 
-    page(p, main)
+    page(photon, main)
 
     sys = '<small>click to show/hide</small>'
-    for cmd in s['web']['system']:
-        cmdo = p.m('system info', cmdd=dict(cmd=cmd), critical=False).get('out')
+    for cmd in settings['web']['system']:
+        cmdo = photon.m('system info', cmdd=dict(cmd=cmd), critical=False).get('out')
         sys += '''
         <div class="block" onclick="toggle('{cmdt}')">
             <h2>{cmd}</h2>
@@ -26,7 +26,7 @@ def gen_website():
         </div>
         '''.format(cmd=cmd, cmdt=cmd.split()[0], cmdo=cmdo)
 
-    page(p, sys, sub='system')
+    page(photon, sys, sub='system')
 
 
 if __name__ == '__main__':
