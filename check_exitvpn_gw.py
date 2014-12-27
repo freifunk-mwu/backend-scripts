@@ -3,35 +3,35 @@
 def check_exitvpn():
     from common import pinit
 
-    p, s = pinit('check_exitvpn', verbose=True)
+    photon, settings = pinit('check_exitvpn', verbose=True)
 
-    uping, aping = p.ping_handler(net_if=s['exitping']['interface']), p.ping_handler(net_if=s['exitping']['interface'])
-    uping.probe, aping.probe = s['exitping']['urls'], s['exitping']['addresses']
+    uping, aping = photon.ping_handler(net_if=settings['exitping']['interface']), photon.ping_handler(net_if=settings['exitping']['interface'])
+    uping.probe, aping.probe = settings['exitping']['urls'], settings['exitping']['addresses']
 
-    p.m('ping results', more=dict(ping_urls=uping.status, ping_addresses=aping.status))
+    photon.m('ping results', more=dict(ping_urls=uping.status, ping_addresses=aping.status))
 
-    for community in s['common']['communities']:
-        cif, cbw = s['batman'][community]['interface'], s['batman'][community]['bandwidth']
+    for community in settings['common']['communities']:
+        cif, cbw = settings['batman'][community]['interface'], settings['batman'][community]['bandwidth']
 
-        if uping.status['ratio'] <= s['exitping']['min_ratio'] or aping.status['ratio'] <= s['exitping']['min_ratio']:
+        if uping.status['ratio'] <= settings['exitping']['min_ratio'] or aping.status['ratio'] <= settings['exitping']['min_ratio']:
 
-            p.m('%s - it seems you are not properly connected!' %(community))
-            p.m(
+            photon.m('%s - it seems you are not properly connected!' %(community))
+            photon.m(
                 'removing batman server flag for %s' %(cif),
                 cmdd=dict(cmd='sudo batctl -m %s gw off' %(cif)),
             )
-            p.m(
+            photon.m(
                 'stopping isc-dhcp-server',
                 cmdd=dict(cmd='sudo initctl stop isc-dhcp-server'),
             )
         else:
 
-            p.m('%s - you are connected!!' %(community))
-            p.m(
+            photon.m('%s - you are connected!!' %(community))
+            photon.m(
                 'setting batman server flag for %s (bw: %s)' %(cif, cbw),
                 cmdd=dict(cmd='sudo batctl -m %s gw server %s' %(cif, cbw)),
             )
-            p.m(
+            photon.m(
                 'starting isc-dhcp-server',
                 cmdd=dict(cmd='sudo initctl start isc-dhcp-server'),
                 critical=False,
