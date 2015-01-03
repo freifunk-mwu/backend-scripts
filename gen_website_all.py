@@ -34,7 +34,7 @@ def gen_website():
 
     page(photon, main)
 
-    sys = '<small>click to show or hide</small>'
+    sys = '<small>click to show or hide</small><br />'
     for command in settings['web']['system']:
         cmd_output = photon.m(
             'retrieving system info',

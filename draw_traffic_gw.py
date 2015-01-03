@@ -21,45 +21,52 @@ def draw_traffic():
 
     photon, settings = pinit('draw_traffic', verbose=True)
 
-    traffic = ''
+    traffic = '<small>click to show or hide</small><br />'
+    avail_if = photon.m(
+        'checking for available interfaces',
+        cmdd=dict(
+            cmd='sudo vnstat --iflist'
+        )
+    ).get('out', '')
     interfaces = settings['web']['traffic']['interfaces'] + [settings['fastd'][community]['interface'] for community in settings['fastd'].keys()]
     for interface in interfaces:
-        if not search_location(path.join(settings['web']['traffic']['dbdir'], interface)):
-            photon.m(
-                'creating vnstat db for %s' %(interface),
-                cmdd=dict(
-                    cmd='sudo vnstat -u -i %s' %(interface)
-                ),
-                verbose=True
-            )
+        if interface in avail_if:
+            if not search_location(path.join(settings['web']['traffic']['dbdir'], interface)):
+                photon.m(
+                    'creating vnstat db for %s' %(interface),
+                    cmdd=dict(
+                        cmd='sudo vnstat -u -i %s' %(interface)
+                    ),
+                    verbose=True
+                )
 
-        images = ''
-        for flag, itype in settings['web']['traffic']['types']:
-            image = '%s-%s.png' %(interface, itype)
-            photon.m(
-                'drawing %s graph for %s' %(itype, interface),
-                cmdd=dict(
-                    cmd='vnstati -i %s -%s -o %s' %(interface, flag, path.join(settings['web']['output'], 'traffic', image))
-                ),
-                critical=False
-            )
+            images = ''
+            for flag, itype in settings['web']['traffic']['types']:
+                image = '%s-%s.png' %(interface, itype)
+                photon.m(
+                    'drawing %s graph for %s' %(itype, interface),
+                    cmdd=dict(
+                        cmd='vnstati -i %s -%s -o %s' %(interface, flag, path.join(settings['web']['output'], 'traffic', image))
+                    ),
+                    critical=False
+                )
 
-            images += photon.template_handler(
-                IMAGE,
+                images += photon.template_handler(
+                    IMAGE,
+                    fields=dict(
+                        interface=interface,
+                        itype=itype,
+                        image=image
+                    )
+                ).sub
+
+            traffic += photon.template_handler(
+                IFBLOCK,
                 fields=dict(
                     interface=interface,
-                    itype=itype,
-                    image=image
+                    images=images
                 )
             ).sub
-
-        traffic += photon.template_handler(
-            IFBLOCK,
-            fields=dict(
-                interface=interface,
-                images=images
-            )
-        ).sub
 
     page(photon, traffic, sub='traffic')
 
