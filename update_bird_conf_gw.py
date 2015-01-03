@@ -18,7 +18,7 @@ def update_bird_conf():
         config_content=photon.m(
             'generating ip_ver%s bgp conf' %(ip_ver),
             cmdd=dict(
-                cmd='./mkbgp -f bird -%s -s %s -x mainz -x wiesbaden -x rhein-neckar -d ebgp_ic' %(ip_ver, settings['icvpn']['bird']['meta']['local']),
+                cmd='./mkbgp -f bird -%s -s %s -x mainz -x wiesbaden -d ebgp_ic' %(ip_ver, settings['icvpn']['bird']['meta']['local']),
                 cwd=settings['icvpn']['bird']['scripts']['local']
             )
         ).get('out')
