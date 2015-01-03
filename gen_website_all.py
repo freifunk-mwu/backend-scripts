@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 BLOCK = '''
-\t<div class="block"><a href="${href}">${text}</a></div>
+\t<div class="block"><a href="{href}">{text}</a></div>
 '''
 
 SYSBLOCK = '''
@@ -38,7 +38,7 @@ def gen_website():
     for command in settings['web']['system']:
         cmd_output = photon.m(
             'retrieving system info',
-            cmdd=dict(command=command),
+            cmdd=dict(cmd=command),
             critical=False
         ).get('out')
         sys += SYSBLOCK.format(command=command, command_tag=command.split()[0], cmd_output=cmd_output)
