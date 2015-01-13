@@ -13,6 +13,7 @@ def mirror_openwrt_repo():
         'mirror openwrt repo dir %s%s' %(settings['openwrt']['remote_repo_url'], settings['openwrt']['bb_stable_dir']),
         cmdd=dict(
             cmd='lftp -f %s' %(lftp_conf),
+            timeout=43200,
         )
     ).get('out')
 
