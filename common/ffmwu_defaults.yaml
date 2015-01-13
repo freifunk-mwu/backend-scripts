@@ -119,6 +119,7 @@ web:
         - ['h', 'hourly']
         - ['t', 'top10']
 openwrt:
+    lftp_conf: 'lftp_commands'
     remote_repo_url: 'http://downloads.openwrt.org'
     bb_stable_dir: '/barrier_breaker/14.07'
     local_repo_dir: '/var/www/openwrt_mirror/barrier_breaker/'
