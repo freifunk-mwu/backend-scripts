@@ -94,4 +94,11 @@ nagg_exitvpn_accouts_all.py
 
     Sollte nur auf einer einzelnen Maschine laufen
 
+mirror_openwrt_repo_srv.py
+    Erstellt einen OpenWRT Mirror mit Hilfe von **lftp**.
+
+    Sollte nur auf Service Maschinen laufen. Benötigt viel Speicherplatz.
+
+    Allein für stable Barrier Breaker werden ca. 36 GiB benötigt.
+
 .. [#root] Benötigt dazu Root-Rechte
