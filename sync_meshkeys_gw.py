@@ -13,7 +13,7 @@ def sync_meshkeys():
         git.cleanup
 
         # send sighup to fastd to reload configuration (and keys)
-        photon.signal_handler(settings['fastd'][community]['pidfile']).hup
+        photon.signal_handler(settings['fastd'][community]['pidfile'], cmdd_if_no_pid=dict(cmd='sudo service fastd start')).hup
 
         git.publish
 
