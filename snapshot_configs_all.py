@@ -29,15 +29,16 @@ def snapshot_configs():
     for loc in settings['queue'].get('locations') + settings['configs']['qadd']:
         change_location(loc, path.join(settings['configs']['target'], loc.lstrip('/')))
 
-    crontab = photon.m(
-        'retrieving crontab contents',
-        cmdd=dict(
-            cmd='crontab -l'
-        ),
-        critical=False
-    )
-    if crontab.get('returncode') == 0:
-        write_file(path.join(settings['configs']['target'], 'crontab'), crontab.get('out'))
+    for b_cmd, b_file in [
+        ('crontab -l', 'crontab'), ('dpkg -l', 'package_list')
+    ]:
+        result = photon.m(
+            'retrieving %s contents' %(b_cmd),
+            cmdd=dict(cmd=b_cmd),
+            critical=False
+        )
+        if result.get('returncode') == 0:
+            write_file(path.join(settings['configs']['target'], b_file), result.get('out'))
 
     git.publish
 
