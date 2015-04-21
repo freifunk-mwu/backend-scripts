@@ -80,10 +80,12 @@ icvpn:
         confdir: &BIRD_DIR  '/etc/bird/'
         ip_ver:
             4:
-                conf: !loc_join [*BIRD_DIR, 'ebgp_peers_v4.inc']
+                peers_conf: !loc_join [*BIRD_DIR, 'ebgp_peers_v4.inc']
+                roa_conf: !loc_join [*BIRD_DIR, 'ebgp_roa_v4.inc']
                 exec: 'bird'
             6:
-                conf: !loc_join [*BIRD_DIR, 'ebgp_peers_v6.inc']
+                peers_conf: !loc_join [*BIRD_DIR, 'ebgp_peers_v6.inc']
+                roa_conf: !loc_join [*BIRD_DIR, 'ebgp_roa_v6.inc']
                 exec: 'bird6'
     icdns:
         scripts: *IC_SCRIPTS
