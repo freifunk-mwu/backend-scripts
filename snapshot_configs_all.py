@@ -6,22 +6,39 @@ def snapshot_configs():
     from photon.util.files import write_file
     from common import pinit
 
-    p, s = pinit('snapshot_configs', verbose=True)
+    photon, settings = pinit('snapshot_configs', verbose=True)
 
-    git = p.git_handler(s['configs']['local'], remote_url=s['configs']['remote'])
+    git = photon.git_handler(
+        settings['configs']['local'],
+        remote_url=settings['configs']['remote']
+    )
     git.cleanup
 
-    if not p.settings.load('queue', s['configs']['queue']):
-        p.m('could not load snapshot queue from git', more=dict(queue=s['configs']['queue']), state=True)
-    p.s2m
+    if not photon.settings.load('queue', settings['configs']['queue']):
+        photon.m(
+            'could not load snapshot queue from git',
+            more=dict(
+                queue=settings['configs']['queue']
+            ),
+            state=True
+        )
+    photon.s2m
 
-    change_location(s['configs']['target'], False, move=True)
+    change_location(settings['configs']['target'], False, move=True)
 
-    for loc in s['queue'].get('locations') + s['configs']['qadd']:
-        change_location(loc, path.join(s['configs']['target'], loc.lstrip('/')))
+    for loc in settings['queue'].get('locations') + settings['configs']['qadd']:
+        change_location(loc, path.join(settings['configs']['target'], loc.lstrip('/')))
 
-    crontab = p.m('getting crontab', cmdd=dict(cmd='crontab -l'), critical=False)
-    if crontab.get('returncode') == 0: write_file(path.join(s['configs']['target'], 'crontab_-l'), crontab.get('out'))
+    for b_cmd, b_file in [
+        ('crontab -l', 'crontab'), ('dpkg -l', 'package_list')
+    ]:
+        result = photon.m(
+            'retrieving %s contents' %(b_cmd),
+            cmdd=dict(cmd=b_cmd),
+            critical=False
+        )
+        if result.get('returncode') == 0:
+            write_file(path.join(settings['configs']['target'], b_file), result.get('out'))
 
     git.publish
 

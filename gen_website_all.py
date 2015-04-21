@@ -1,32 +1,49 @@
 #!/usr/bin/env python3
 
+BLOCK = '''
+\t<div class="block"><a href="{href}">{text}</a></div>
+'''
+
+SYSBLOCK = '''
+\t<div class="block" onclick="toggle('{command_tag}')">
+\t\t<h2>{command}</h2>
+\t\t<div class="cblock" id="{command_tag}">
+\t\t\t<pre>{cmd_output}</pre>
+\t\t</div>
+\t</div>
+'''
+
 def gen_website():
     from os import path
     from common import pinit
     from common.html import page
 
-    p, s = pinit('gen_website', verbose=True)
+    photon, settings = pinit('gen_website', verbose=True)
 
-    main = '<div class="block"><a href="firmware">Firmware</a></div>'  if path.exists(path.join(s['web']['output'], 'firmware')) else ''
-    main += '<div class="block"><a href="_archive">Firmware Archive</a></div>'  if path.exists(path.join(s['web']['output'], '_archive')) else ''
-    main += '<div class="block"><a href="traffic">Traffic</a></div>'  if path.exists(path.join(s['web']['output'], 'traffic')) else ''
-    main += '<div class="block"><a href="system">System Statistics</a></div>'
+    main = ''
+    if path.exists(path.join(settings['web']['output'], 'firmware')):
+        main += BLOCK.format(href='firmware', text='Firmware')
 
-    page(p, main)
+    if path.exists(path.join(settings['web']['output'], '_archive')):
+        main += BLOCK.format(href='_archive', text='Firmware Archive')
 
-    sys = '<small>click to show/hide</small>'
-    for cmd in s['web']['system']:
-        cmdo = p.m('system info', cmdd=dict(cmd=cmd), critical=False).get('out')
-        sys += '''
-        <div class="block" onclick="toggle('{cmdt}')">
-            <h2>{cmd}</h2>
-            <div class="cblock" id="{cmdt}">
-                <pre>{cmdo}</pre>
-            </div>
-        </div>
-        '''.format(cmd=cmd, cmdt=cmd.split()[0], cmdo=cmdo)
+    if path.exists(path.join(settings['web']['output'], 'traffic')):
+        main += BLOCK.format(href='traffic', text='Traffic')
 
-    page(p, sys, sub='system')
+    main += BLOCK.format(href='system', text='System Statistics')
+
+    page(photon, main)
+
+    sys = '<small>click to show or hide</small><br />'
+    for command in settings['web']['system']:
+        cmd_output = photon.m(
+            'retrieving system info',
+            cmdd=dict(cmd=command),
+            critical=False
+        ).get('out')
+        sys += SYSBLOCK.format(command=command, command_tag=command.split()[0], cmd_output=cmd_output)
+
+    page(photon, sys, sub='system')
 
 
 if __name__ == '__main__':

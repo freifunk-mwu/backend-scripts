@@ -3,14 +3,17 @@
 def sync_meshkeys():
     from common import pinit
 
-    p, s = pinit('sync_meshkeys', verbose=True)
+    photon, settings = pinit('sync_meshkeys', verbose=True)
 
-    for community in s['common']['communities']:
-        git = p.git_handler(s['fastd'][community]['local'], remote_url=s['fastd'][community]['remote'])
+    for community in settings['common']['communities']:
+        git = photon.git_handler(
+            settings['fastd'][community]['local'],
+            remote_url=settings['fastd'][community]['remote']
+        )
         git.cleanup
 
-        fastd = p.signal_handler(s['fastd'][community]['pidfile'])
-        fastd.hup
+        # send sighup to fastd to reload configuration (and keys)
+        photon.signal_handler(settings['fastd'][community]['pidfile'], cmdd_if_no_pid=dict(cmd='sudo service fastd start')).hup
 
         git.publish
 

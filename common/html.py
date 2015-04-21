@@ -1,22 +1,22 @@
 
-def page(p, content, sub=None):
+def page(photon, content, sub=None):
     from os import path
     from photon.util.locations import search_location, change_location
     from photon.util.system import get_timestamp, get_hostname
 
-    s = p.settings.get
-    dnf = path.dirname(__file__)
+    settings = photon.settings.get
+    pwd = path.dirname(__file__)
 
-    out = path.join(s['web']['output'], sub if sub else '', 'index.html')
+    out = path.join(settings['web']['output'], sub if sub else '', 'index.html')
     search_location(out, create_in=path.dirname(out))
 
     if sub: prfx, sub = '../', '&mdash; %s' %(sub)
     else:
         prfx, sub = './', ''
-        change_location(path.join(dnf, 'static'), path.join(s['web']['output'], 'static'))
+        change_location(path.join(pwd, 'static'), path.join(settings['web']['output'], 'static'))
 
-    t = p.template_handler(
-        path.join(dnf, 'main.tpl'),
+    template = photon.template_handler(
+        path.join(pwd, 'main.tpl'),
         fields=dict(
             hostname=get_hostname(),
             prfx=prfx,
@@ -25,4 +25,4 @@ def page(p, content, sub=None):
             timestamp=get_timestamp()
         )
     )
-    t.write(out, append=False)
+    template.write(out, append=False)

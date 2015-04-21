@@ -67,13 +67,16 @@ fastd:
         pidfile: !loc_join ['/var/run', !str_join ['fastd.', *FASTD_WI_IF, '.pid']]
 icvpn:
     interface: &IC_IF 'icVPN'
-    bird:
-        scripts:
+    repositories:
+        scripts: &IC_SCRIPTS
             remote: 'https://github.com/freifunk/icvpn-scripts'
             local: !loc_join ['data_dir', 'icvpn-scripts.git']
-        meta:
+        meta: &IC_META
             remote: 'https://github.com/freifunk/icvpn-meta'
             local: !loc_join ['data_dir', 'icvpn-meta.git']
+    bird:
+        scripts: *IC_SCRIPTS
+        meta: *IC_META
         confdir: &BIRD_DIR  '/etc/bird/'
         ip_ver:
             4:
@@ -82,6 +85,11 @@ icvpn:
             6:
                 conf: !loc_join [*BIRD_DIR, 'ebgp_peers_v6.inc']
                 exec: 'bird6'
+    icdns:
+        scripts: *IC_SCRIPTS
+        meta: *IC_META
+        confdir: &ICDNS_DIR  '/etc/bind/'
+        conf: !loc_join [*ICDNS_DIR, 'named.conf.icvpn']
     tinc:
         remote: 'https://github.com/freifunk/icvpn'
         local: &TINC_DIR '/etc/tinc/icVPN'
@@ -110,3 +118,8 @@ web:
         - ['d', 'daily']
         - ['h', 'hourly']
         - ['t', 'top10']
+openwrt:
+    lftp_conf: 'lftp_commands'
+    remote_repo_url: 'http://downloads.openwrt.org'
+    bb_stable_dir: '/barrier_breaker/14.07'
+    local_repo_dir: '/var/www/openwrt_mirror/barrier_breaker/'
