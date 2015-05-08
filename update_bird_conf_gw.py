@@ -14,9 +14,9 @@ def update_bird_conf():
 
     for ip_ver in settings['icvpn']['bird']['ip_ver']:
         do_restart = False
-        bird_conf = photon.template_handler('${config_content}')
 
         # peers
+        bird_peers_conf = photon.template_handler('${peers_config_content}')
         peers_config_content=photon.m(
             'generating ip_ver%s bgp peers conf' %(ip_ver),
             cmdd=dict(
@@ -33,6 +33,7 @@ def update_bird_conf():
             do_restart = True
 
         # roa
+        bird_roa_conf = photon.template_handler('${roa_config_content}')
         roa_config_content=photon.m(
             'generating ip_ver%s bgp roa conf' %(ip_ver),
             cmdd=dict(
