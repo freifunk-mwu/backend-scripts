@@ -82,10 +82,12 @@ icvpn:
             4:
                 peers_conf: !loc_join [*BIRD_DIR, 'ebgp_peers_v4.inc']
                 roa_conf: !loc_join [*BIRD_DIR, 'ebgp_roa_v4.inc']
+                roa_maxlen: '20'
                 exec: 'bird'
             6:
                 peers_conf: !loc_join [*BIRD_DIR, 'ebgp_peers_v6.inc']
                 roa_conf: !loc_join [*BIRD_DIR, 'ebgp_roa_v6.inc']
+                roa_maxlen: '64'
                 exec: 'bird6'
     icdns:
         scripts: *IC_SCRIPTS
