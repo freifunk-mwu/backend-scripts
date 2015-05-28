@@ -37,7 +37,7 @@ def update_bird_conf():
         roa_config_content=photon.m(
             'generating ip_ver%s bgp roa conf' %(ip_ver),
             cmdd=dict(
-                cmd='./mkroa -f bird -%s -s %s -x mainz -x wiesbaden' %(ip_ver, settings['icvpn']['bird']['meta']['local']),
+                cmd='./mkroa -f bird -%s -s %s -m %s -x mainz -x wiesbaden' %(ip_ver, settings['icvpn']['bird']['meta']['local'], settings['icvpn']['bird']['ip_ver'][ip_ver]['roa_maxlen']),
                 cwd=settings['icvpn']['bird']['scripts']['local']
             )
         ).get('out')
