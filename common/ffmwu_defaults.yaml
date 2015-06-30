@@ -102,9 +102,10 @@ icvpn:
         pidfile: !loc_join ['/var/run', !str_join ['tinc.', *IC_IF, '.pid']]
         exec: 'tinc'
         iamdb: # :)
-            hinterschinken: 'wiesbaden2'
+            kaschu: 'wiesbaden2'
             lotuswurzel: 'wiesbaden1'
             spinat: 'mainz2'
+            wasserfloh: 'mainz1'
 web:
     output: !loc_join ['/var/www/html']
     system:
