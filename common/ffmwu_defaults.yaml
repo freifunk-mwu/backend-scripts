@@ -65,6 +65,13 @@ fastd:
         local: !loc_join ['/etc/fastd', *FASTD_WI_IF, 'peers']
         remote: !str_join ['ssh://', *GH_ID ,'/freifunk-mwu/peers-ffwi.git']
         pidfile: !loc_join ['/var/run', !str_join ['fastd.', *FASTD_WI_IF, '.pid']]
+ffapi:
+    mz:
+        local: !loc_join ['/var/www/ffapi-mainz']
+        remote: !str_join ['ssh://', *GH_ID ,'/freifunk-mwu/ffapi-mainz.git']
+    wi:
+        local: !loc_join ['/var/www/ffapi-wiesbaden']
+        remote: !str_join ['ssh://', *GH_ID ,'/freifunk-mwu/ffapi-wiesbaden.git']
 icvpn:
     interface: &IC_IF 'icVPN'
     repositories:
