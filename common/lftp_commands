@@ -1,3 +1,4 @@
 open http://downloads.openwrt.org
 mirror --delete /barrier_breaker/14.07 /var/www/openwrt_mirror/barrier_breaker/
+mirror --delete /chaos_calmer /var/www/openwrt_mirror/
 quit
