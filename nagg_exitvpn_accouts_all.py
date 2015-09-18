@@ -41,7 +41,7 @@ def nagg_exitvpn_accouts():
         punchline = 'Achtung! VPN Account läuft aus' if res['warning'] else 'VPN Wochenbericht'
         mail = photon.mail_handler(
             to=settings['common']['mailto']['admin'],
-            cc=settings['common']['mailto']['kontakt'],
+            cc=[ settings['common']['mailto']['kontakt_mz'], settings['common']['mailto']['kontakt_wi'] ],
             sender=settings['common']['mailto']['local'],
             subject='photon exitVPN notify',
             punchline=punchline,

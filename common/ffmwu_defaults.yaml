@@ -16,7 +16,8 @@ common:
     mailto:
         admin: !str_join ['admin', '@', *DOMAIN]
         local: !str_join ['hostname', '@', *DOMAIN]
-        kontakt: !str_join ['kontakt', '@', 'freifunk-mainz', '.', 'de']
+        kontakt_mz: !str_join ['kontakt', '@', 'freifunk-mainz', '.', 'de']
+        kontakt_wi: !str_join ['info', '@', 'freifunk-wiesbaden', '.', 'de']
 crypt:
     ssh:
         folder: &S_FL !loc_join ['home_dir', '.ssh']
