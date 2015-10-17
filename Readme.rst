@@ -15,6 +15,7 @@ _etc/dot2json.pl
 Die Endungen der Scripte beschreiben auf welchem Typ von Maschine diese i.d.R. laufen sollen:
 
 :_gw: Gateways
+:_srv: Diensteserver
 :_all: Alle (Gateways, Diensteserver, Buildserver, Webserver, ...)
 
 Installation/Betrieb
@@ -71,6 +72,19 @@ update_bind_conf_gw.py
 
     Startet bind neu [#root]_, bei einer Änderung in der Konfiguration.
 
+Diensteserver
+^^^^^^^^^^^^^
+
+mirror_openwrt_repo_srv.py
+    Erstellt einen OpenWRT Mirror mit Hilfe von **lftp**.
+
+    Sollte nur auf Service Maschinen laufen. Benötigt viel Speicherplatz.
+
+    Allein für stable Barrier Breaker werden ca. 36 GiB benötigt.
+
+sync_ffapi_srv.py
+    Synchronisiert die Freifunk-API Files mit ihren jeweiligen Repos (`mz <https://github.com/freifunk-mwu/ffapi-mainz>`_; `wi <https://github.com/freifunk-mwu/ffapi-wiesbaden>`_).
+
 Weitere/Alle Maschinen
 ^^^^^^^^^^^^^^^^^^^^^^
 
@@ -93,12 +107,5 @@ nagg_exitvpn_accouts_all.py
     Entweder als Wochenbericht, oder täglich, wenn ein Account droht auszulaufen.
 
     Sollte nur auf einer einzelnen Maschine laufen
-
-mirror_openwrt_repo_srv.py
-    Erstellt einen OpenWRT Mirror mit Hilfe von **lftp**.
-
-    Sollte nur auf Service Maschinen laufen. Benötigt viel Speicherplatz.
-
-    Allein für stable Barrier Breaker werden ca. 36 GiB benötigt.
 
 .. [#root] Benötigt dazu Root-Rechte
