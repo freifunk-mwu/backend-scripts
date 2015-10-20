@@ -1,4 +1,4 @@
-backend-scripts
+Backend Scripts
 ===============
 
 Hier werden Skripte gesammelt, die auf den Gates zum Einsatz kommen.
@@ -9,7 +9,7 @@ _etc/dot2json.pl
 
 ----
 
-`Photon <http://photon.readthedocs.org>`_ Scripte
+`Photon <http://photon.readthedocs.org>`_ Skripte
 -------------------------------------------------
 
 Die Endungen der Scripte beschreiben auf welchem Typ von Maschine diese i.d.R. laufen sollen:
