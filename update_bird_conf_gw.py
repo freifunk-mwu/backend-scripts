@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 
-def update_bird_conf():
-    from photon.util.files import read_file
-    from common import pinit
+from photon.util.files import read_file
 
+from common import pinit
+
+
+def update_bird_conf():
     photon, settings = pinit('update_bird_conf', verbose=True)
 
     for repo in ['scripts', 'meta']:
@@ -17,10 +19,14 @@ def update_bird_conf():
 
         # peers
         bird_peers_conf = photon.template_handler('${peers_config_content}')
-        peers_config_content=photon.m(
-            'generating ip_ver%s bgp peers conf' %(ip_ver),
+        peers_config_content = photon.m(
+            'generating ip_ver%s bgp peers conf' % (ip_ver),
             cmdd=dict(
-                cmd='./mkbgp -f bird -%s -s %s -x mainz -x wiesbaden -d ebgp_ic' %(ip_ver, settings['icvpn']['bird']['meta']['local']),
+                cmd='./mkbgp -f bird -%s -s %s '
+                    '-x mainz -x wiesbaden -d ebgp_ic' % (
+                        ip_ver,
+                        settings['icvpn']['bird']['meta']['local']
+                    ),
                 cwd=settings['icvpn']['bird']['scripts']['local']
             )
         ).get('out')
@@ -34,10 +40,14 @@ def update_bird_conf():
 
         # roa
         bird_roa_conf = photon.template_handler('${roa_config_content}')
-        roa_config_content=photon.m(
-            'generating ip_ver%s bgp roa conf' %(ip_ver),
+        roa_config_content = photon.m(
+            'generating ip_ver%s bgp roa conf' % (ip_ver),
             cmdd=dict(
-                cmd='./mkroa -f bird -%s -s %s -m %s -x mainz -x wiesbaden' %(ip_ver, settings['icvpn']['bird']['meta']['local'], settings['icvpn']['bird']['ip_ver'][ip_ver]['roa_maxlen']),
+                cmd='./mkroa -f bird -%s -s %s -m %s -x mainz -x wiesbaden' % (
+                    ip_ver,
+                    settings['icvpn']['bird']['meta']['local'],
+                    settings['icvpn']['bird']['ip_ver'][ip_ver]['roa_maxlen']
+                ),
                 cwd=settings['icvpn']['bird']['scripts']['local']
             )
         ).get('out')
@@ -51,11 +61,14 @@ def update_bird_conf():
 
         if do_restart:
             photon.m(
-                'restarting bird daemon for v%s' %(ip_ver),
+                'restarting bird daemon for v%s' % (ip_ver),
                 cmdd=dict(
-                    cmd='sudo service %s restart' %(settings['icvpn']['bird']['ip_ver'][ip_ver]['exec'])
+                    cmd='sudo service %s restart' % (
+                        settings['icvpn']['bird']['ip_ver'][ip_ver]['exec']
+                    )
                 )
             )
+
 
 if __name__ == '__main__':
     update_bird_conf()
