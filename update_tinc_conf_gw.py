@@ -1,5 +1,14 @@
 #!/usr/bin/env python3
+'''
+To create configuration for tinc, a git hook script is used.
 
+**icvpn-tinc-post-merge**
+
+.. literalinclude:: ../../icvpn-tinc-post-merge
+    :language: bash
+    :linenos:
+
+'''
 from common import pinit
 
 

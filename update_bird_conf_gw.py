@@ -6,6 +6,17 @@ from common import pinit
 
 
 def update_bird_conf():
+    '''
+    Pulls updates from the
+    `freifunk icvpn-meta repo <https://github.com/freifunk/icvpn-meta>`_
+    and creates with the tools from the
+    `freifunk icvpn-scripts repo <https://github.com/freifunk/icvpn-scripts>`_
+    a configuration for bird.
+
+    This is done twice, for ``bird`` and ``bird6``.
+
+    Restarts both daemons when the configuration changed.
+    '''
     photon, settings = pinit('update_bird_conf', verbose=True)
 
     for repo in ['scripts', 'meta']:
