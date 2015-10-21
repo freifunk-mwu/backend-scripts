@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 
-def update_bind_conf():
-    from photon.util.files import read_file
-    from common import pinit
+from photon.util.files import read_file
 
+from common import pinit
+
+
+def update_bind_conf():
     photon, settings = pinit('update_bind_conf', verbose=True)
 
     for repo in ['scripts', 'meta']:
@@ -13,11 +15,13 @@ def update_bind_conf():
         )._pull()
 
     bind_conf = photon.template_handler('${config_content}')
-    config_content=photon.m(
+    config_content = photon.m(
         'genarating bind conf',
         cmdd=dict(
-            cmd='./mkdns -f bind -s %s -x mainz -x wiesbaden -x bingen' %(settings['icvpn']['icdns']['meta']['local']),
-            cwd=settings['icvpn']['icdns']['scripts']['local']\
+            cmd='./mkdns -f bind -s %s -x mainz -x wiesbaden -x bingen' % (
+                settings['icvpn']['icdns']['meta']['local']
+            ),
+            cwd=settings['icvpn']['icdns']['scripts']['local']
         )
     ).get('out')
     bind_conf.sub = dict(config_content=config_content)
@@ -32,6 +36,7 @@ def update_bind_conf():
                 cmd='sudo rndc reload'
             )
         )
+
 
 if __name__ == '__main__':
     update_bind_conf()
