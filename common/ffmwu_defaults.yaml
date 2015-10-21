@@ -38,6 +38,20 @@ configs:
     qadd: [*S_PU, *S_CN, *S_AU, *E_PU]
     ssh_deploy: !loc_join [*SN_L, 'ssh.yaml']
     target: !loc_join [*SN_L, !str_join ['hostname']]
+documentation:
+    local: &RTFM_L !loc_join ['data_dir', 'rtfm']
+    output: !loc_join ['/var/www/rtfm/']
+    builddir: !loc_join [*RTFM_L, '_builds']
+    repositories:
+        gluon_builder:
+            remote: !str_join ['ssh://', *GH_ID ,'/freifunk-mwu/gluon-builder-ffmwu.git']
+            docpath: 'docs'
+        gluon_gateway:
+            remote: !str_join ['ssh://', *GH_ID ,'/freifunk-mwu/technik-meta.git']
+            docpath: 'gluon_gateway_doku'
+        photon:
+            remote: !str_join ['ssh://', *GH_ID ,'/spookey/photon.git']
+            docpath: 'docs'
 exitping:
         addresses:
         - '95.143.172.211' # freifunk-mainz.de
