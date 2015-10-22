@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 
-def check_radvd():
-    from common import pinit
+from common import pinit
 
+
+def check_radvd():
     photon, settings = pinit('check_radvd', verbose=True)
 
     status = photon.m(
