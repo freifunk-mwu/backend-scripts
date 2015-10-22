@@ -4,6 +4,11 @@ from common import pinit
 
 
 def check_bind():
+    '''
+    Checks if ``bind9`` is still running.
+
+    Will try to restart it if previous check failed.
+    '''
     photon, settings = pinit('check_bind', verbose=True)
 
     status = photon.m(

@@ -4,6 +4,10 @@ from common import pinit
 
 
 def check_exitvpn():
+    '''
+    Sets the ``BATMAN`` Server Flag and starts/stops ``isc-dhcp-server``,
+    if some given Hosts can be reached through the `ExitVPN`.
+    '''
     photon, settings = pinit('check_exitvpn', verbose=True)
 
     uping = photon.ping_handler(net_if=settings['exitping']['interface'])

@@ -4,6 +4,11 @@ from common import pinit
 
 
 def check_radvd():
+    '''
+    Checks if ``radvd`` is running.
+
+    Will try to restart it if previous check failed.
+    '''
     photon, settings = pinit('check_radvd', verbose=True)
 
     status = photon.m(
@@ -24,6 +29,7 @@ def check_radvd():
         )
     else:
         photon.m('radvd is running')
+
 
 if __name__ == '__main__':
     check_radvd()
