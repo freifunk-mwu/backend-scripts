@@ -4,6 +4,11 @@
 .. literalinclude:: ../../common/main.tpl
     :language: html
     :linenos:
+
+.. seealso::
+
+    :meth:`draw_traffic_all.draw_traffic`
+    :meth:`gen_website_all.gen_website`
 '''
 from os import path
 

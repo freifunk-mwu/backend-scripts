@@ -6,6 +6,10 @@ You may or may not see it's output on
 * `pudding.freifunk-mwu.de <http://pudding.freifunk-mwu.de/>`_
 * `kaschu.ffwi.org <http://kaschu.ffwi.org/>`_
 * `spinat.ffmz.org <http://spinat.ffmz.org/>`_
+
+.. seealso::
+
+    :meth:`common.html.page`
 '''
 from os import path
 
