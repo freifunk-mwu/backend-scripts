@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 
-def check_exitvpn():
-    from common import pinit
+from common import pinit
 
+
+def check_exitvpn():
     photon, settings = pinit('check_exitvpn', verbose=True)
 
     uping = photon.ping_handler(net_if=settings['exitping']['interface'])
@@ -22,14 +23,19 @@ def check_exitvpn():
     for community in settings['common']['communities']:
         cif = settings['batman'][community]['interface']
         cbw = settings['batman'][community]['bandwidth']
+        urat = uping.status['ratio'] <= settings['exitping']['min_ratio']
+        arat = aping.status['ratio'] <= settings['exitping']['min_ratio']
 
-        if uping.status['ratio'] <= settings['exitping']['min_ratio'] or aping.status['ratio'] <= settings['exitping']['min_ratio']:
-
-            photon.m('exitvpn for %s - it seems you are not properly connected!' %(community))
+        if urat or arat:
             photon.m(
-                'removing batman server flag for %s' %(cif),
+                'exitvpn for %s - it seems you are not properly connected!' % (
+                    community
+                )
+            )
+            photon.m(
+                'removing batman server flag for %s' % (cif),
                 cmdd=dict(
-                    cmd='sudo batctl -m %s gw off' %(cif)
+                    cmd='sudo batctl -m %s gw off' % (cif)
                 )
             )
             photon.m(
@@ -38,13 +44,13 @@ def check_exitvpn():
                     cmd='sudo initctl stop isc-dhcp-server'
                 )
             )
-        else:
 
-            photon.m('exitvpn for %s - you are connected!!' %(community))
+        else:
+            photon.m('exitvpn for %s - you are connected!!' % (community))
             photon.m(
-                'setting batman server flag for %s (bw: %s)' %(cif, cbw),
+                'setting batman server flag for %s (bw: %s)' % (cif, cbw),
                 cmdd=dict(
-                    cmd='sudo batctl -m %s gw server %s' %(cif, cbw)
+                    cmd='sudo batctl -m %s gw server %s' % (cif, cbw)
                 ),
             )
             photon.m(
@@ -54,6 +60,7 @@ def check_exitvpn():
                 ),
                 critical=False
             )
+
 
 if __name__ == '__main__':
     check_exitvpn()
