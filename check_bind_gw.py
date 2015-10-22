@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 
-def check_bind9():
-    from common import pinit
+from common import pinit
 
-    photon, settings = pinit('check_bind9', verbose=True)
+
+def check_bind():
+    photon, settings = pinit('check_bind', verbose=True)
 
     status = photon.m(
         'testing for bind9',
@@ -24,5 +25,6 @@ def check_bind9():
     else:
         photon.m('bind9 is running')
 
+
 if __name__ == '__main__':
-    check_bind9()
+    check_bind()
