@@ -1,3 +1,10 @@
+'''
+**common/main.tpl**
+
+.. literalinclude:: ../../common/main.tpl
+    :language: html
+    :linenos:
+'''
 from os import path
 
 from photon.util.locations import change_location, search_location
@@ -5,6 +12,11 @@ from photon.util.system import get_hostname, get_timestamp
 
 
 def page(photon, content, sub=None):
+    '''
+    Helps creating webpages by placing the **content** into the ``main.tpl``
+    and write the output to ``web/output/`` **sub/** ``index.html``.
+    '''
+
     settings = photon.settings.get
     pwd = path.dirname(__file__)
 

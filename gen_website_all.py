@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
+'''
+You may or may not see it's output on
 
+* `lotuswurzel.freifunk-mwu.de <http://lotuswurzel.freifunk-mwu.de/>`_
+* `pudding.freifunk-mwu.de <http://pudding.freifunk-mwu.de/>`_
+* `kaschu.ffwi.org <http://kaschu.ffwi.org/>`_
+* `spinat.ffmz.org <http://spinat.ffmz.org/>`_
+'''
 from os import path
 
 from common import pinit
@@ -20,6 +27,13 @@ SYSBLOCK = '''
 
 
 def gen_website():
+    '''
+    Generates a basic landing page, linking to firmware and/or traffic
+    statistics (if any).
+
+    Adds some basic system statistics by running shell commands, putting
+    the output into the status page.
+    '''
     photon, settings = pinit('gen_website', verbose=True)
 
     main = ''

@@ -1,5 +1,16 @@
 #!/usr/bin/env python3
+'''
+You may or may not see it's output on
 
+* `lotuswurzel <http://lotuswurzel.freifunk-mwu.de/traffic>`_
+* `aubergine <http://aubergine.freifunk-mwu.de/traffic>`_
+* `kaschu <http://kaschu.ffwi.org/traffic>`_ (inside wi mesh)
+* `spinat <http://spinat.ffmz.org/traffic>`_ (inside mz mesh)
+
+.. seealso::
+
+    :meth:`common.html.page`
+'''
 from os import path
 
 from photon.util.locations import search_location
@@ -22,6 +33,16 @@ IFBLOCK = '''
 
 
 def draw_traffic():
+    '''
+    Draws `vnstat <http://humdi.net/vnstat/>`_  Graphs, and glues them
+    into a Webseite.
+
+    Run only on machines which are connected to the mesh (Gateways,
+    Service-Machines).
+
+    * If a specified interface does not exist on this machine, it's skipped.
+    * If no vnstat database was found for one interface, it will be created.
+    '''
     photon, settings = pinit('draw_traffic', verbose=True)
 
     traffic = '<small>click to show or hide</small><br />'
