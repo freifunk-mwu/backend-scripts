@@ -1,9 +1,14 @@
 #!/usr/bin/env python3
 
+from os import path
+
+from common import pinit
+from common.html import page
+
+
 BLOCK = '''
 \t<div class="block"><a href="{href}">{text}</a></div>
 '''
-
 SYSBLOCK = '''
 \t<div class="block" onclick="toggle('{command_tag}')">
 \t\t<h2>{command}</h2>
@@ -13,11 +18,8 @@ SYSBLOCK = '''
 \t</div>
 '''
 
-def gen_website():
-    from os import path
-    from common import pinit
-    from common.html import page
 
+def gen_website():
     photon, settings = pinit('gen_website', verbose=True)
 
     main = ''
@@ -41,7 +43,11 @@ def gen_website():
             cmdd=dict(cmd=command),
             critical=False
         ).get('out')
-        sys += SYSBLOCK.format(command=command, command_tag=command.split()[0], cmd_output=cmd_output)
+        sys += SYSBLOCK.format(
+            command=command,
+            command_tag=command.split()[0],
+            cmd_output=cmd_output
+        )
 
     page(photon, sys, sub='system')
 

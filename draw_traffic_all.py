@@ -1,9 +1,16 @@
 #!/usr/bin/env python3
 
+from os import path
+
+from photon.util.locations import search_location
+
+from common import pinit
+from common.html import page
+
+
 IMAGE = '''
 <img src="${image}" alt="${interface} - ${itype}" /><br />
 '''
-
 IFBLOCK = '''
 \t<div class="ifblock" onclick="toggle('${interface}')">
 \t\t<h2>${interface}</h2>
@@ -13,12 +20,8 @@ IFBLOCK = '''
 \t</div>
 '''
 
-def draw_traffic():
-    from os import path
-    from photon.util.locations import search_location
-    from common import pinit
-    from common.html import page
 
+def draw_traffic():
     photon, settings = pinit('draw_traffic', verbose=True)
 
     traffic = '<small>click to show or hide</small><br />'
@@ -28,25 +31,34 @@ def draw_traffic():
             cmd='sudo vnstat --iflist'
         )
     ).get('out', '')
-    interfaces = settings['web']['traffic']['interfaces'] + [settings['fastd'][community]['interface'] for community in settings['fastd'].keys()]
+
+    interfaces = settings['web']['traffic']['interfaces'] + [
+        settings['fastd'][com]['interface'] for com in settings['fastd'].keys()
+    ]
     for interface in interfaces:
         if interface in avail_if:
-            if not search_location(path.join(settings['web']['traffic']['dbdir'], interface)):
+            if not search_location(
+                path.join(settings['web']['traffic']['dbdir'], interface)
+            ):
                 photon.m(
-                    'creating vnstat db for %s' %(interface),
+                    'creating vnstat db for %s' % (interface),
                     cmdd=dict(
-                        cmd='sudo vnstat -u -i %s' %(interface)
+                        cmd='sudo vnstat -u -i %s' % (interface)
                     ),
                     verbose=True
                 )
 
             images = ''
             for flag, itype in settings['web']['traffic']['types']:
-                image = '%s-%s.png' %(interface, itype)
+                image = '%s-%s.png' % (interface, itype)
                 photon.m(
-                    'drawing %s graph for %s' %(itype, interface),
+                    'drawing %s graph for %s' % (itype, interface),
                     cmdd=dict(
-                        cmd='vnstati -i %s -%s -o %s' %(interface, flag, path.join(settings['web']['output'], 'traffic', image))
+                        cmd='vnstati -i %s -%s -o %s' % (
+                            interface, flag, path.join(
+                                settings['web']['output'], 'traffic', image
+                            )
+                        )
                     ),
                     critical=False
                 )
@@ -69,6 +81,7 @@ def draw_traffic():
             ).sub
 
     page(photon, traffic, sub='traffic')
+
 
 if __name__ == '__main__':
     draw_traffic()

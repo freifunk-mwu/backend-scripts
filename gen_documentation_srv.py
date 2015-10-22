@@ -15,6 +15,7 @@ def gen_documentation():
     You may or may not see the results on
     `rtfm.freifunk-mwu.de <http://rtfm.freifunk-mwu.de>`_,
     the mirrored repos are currently:
+
         :gluon_builder: https://github.com/freifunk-mwu/gluon-builder-ffmwu
         :gluon_gateway: https://github.com/freifunk-mwu/technik-meta
         :photon: https://github.com/spookey/photon
