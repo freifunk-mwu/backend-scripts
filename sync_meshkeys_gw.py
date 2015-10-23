@@ -4,6 +4,12 @@ from common import pinit
 
 
 def sync_meshkeys():
+    '''
+    Updates the ``peers`` folder of ``fastd`` with it's repositories,
+
+    Sends a SIGHUP to ``fastd`` afterwards, so it reloads the configuration and
+    keys.
+    '''
     photon, settings = pinit('sync_meshkeys', verbose=True)
 
     for community in settings['common']['communities']:
