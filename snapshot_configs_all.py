@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 
-def snapshot_configs():
-    from os import path
-    from photon.util.locations import change_location
-    from photon.util.files import write_file
-    from common import pinit
+from os import path
 
+from photon.util.files import write_file
+from photon.util.locations import change_location
+
+from common import pinit
+
+
+def snapshot_configs():
     photon, settings = pinit('snapshot_configs', verbose=True)
 
     git = photon.git_handler(
@@ -26,21 +29,30 @@ def snapshot_configs():
 
     change_location(settings['configs']['target'], False, move=True)
 
-    for loc in settings['queue'].get('locations') + settings['configs']['qadd']:
-        change_location(loc, path.join(settings['configs']['target'], loc.lstrip('/')))
+    queue = settings['queue'].get('locations') + settings['configs']['qadd']
+    for loc in queue:
+        change_location(
+            loc,
+            path.join(settings['configs']['target'], loc.lstrip('/'))
+        )
 
     for b_cmd, b_file in [
-        ('crontab -l', 'crontab'), ('dpkg -l', 'package_list')
+        ('crontab -l', 'crontab'),
+        ('dpkg -l', 'package_list')
     ]:
         result = photon.m(
-            'retrieving %s contents' %(b_cmd),
+            'retrieving %s contents' % (b_cmd),
             cmdd=dict(cmd=b_cmd),
             critical=False
         )
         if result.get('returncode') == 0:
-            write_file(path.join(settings['configs']['target'], b_file), result.get('out'))
+            write_file(
+                path.join(settings['configs']['target'], b_file),
+                result.get('out')
+            )
 
     git.publish
+
 
 if __name__ == '__main__':
     snapshot_configs()
