@@ -9,6 +9,13 @@ from common import pinit
 
 
 def snapshot_configs():
+    '''
+    Creates some snapshot of configuration and stores them in a repository.
+
+    In other words: This script is the author of the
+    `gateway configs repo <https://github.com/freifunk-mwu/gateway-configs/>`_,
+    see the ``queue.yaml`` file there for a list of files to backup.
+    '''
     photon, settings = pinit('snapshot_configs', verbose=True)
 
     git = photon.git_handler(
