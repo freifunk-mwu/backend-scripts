@@ -53,15 +53,3 @@ mirror_openwrt_repo_srv.py
 
 sync_ffapi_srv.py
     Synchronisiert die Freifunk-API Files mit ihren jeweiligen Repos (`mz <https://github.com/freifunk-mwu/ffapi-mainz>`_; `wi <https://github.com/freifunk-mwu/ffapi-wiesbaden>`_).
-
-Weitere/Alle Maschinen
-^^^^^^^^^^^^^^^^^^^^^^
-
-nagg_exitvpn_accouts_all.py
-    Geht die Liste der ExitVPN Accounts im `gateway-configs Repository`_ durch und schickt Mails.
-
-    Entweder als Wochenbericht, oder täglich, wenn ein Account droht auszulaufen.
-
-    Sollte nur auf einer einzelnen Maschine laufen
-
-.. [#root] Benötigt dazu Root-Rechte
