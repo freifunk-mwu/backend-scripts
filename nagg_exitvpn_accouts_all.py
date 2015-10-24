@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 
-def nagg_exitvpn_accouts():
-    from common import pinit
-    from datetime import datetime, timedelta
+from datetime import datetime, timedelta
 
+from common import pinit
+
+
+def nagg_exitvpn_accouts():
     photon, settings = pinit('nagg_exitvpn_accouts', verbose=True)
 
     # initialize the gateway-configs repo ...
@@ -23,25 +25,41 @@ def nagg_exitvpn_accouts():
         )
     photon.s2m
 
-    res=dict(overdue=list(), warning=list(), good=list())
+    res = dict(overdue=list(), warning=list(), good=list())
     now = datetime.now()
+    warndays = settings['exitvpn']['conf']['warndays']
+    digestday = settings['exitvpn']['conf']['digestday']
 
     for gateway in sorted(settings['exitvpn']['gateways'].keys()):
         if settings['exitvpn']['gateways'][gateway].get('until'):
-            until = datetime.strptime(settings['exitvpn']['gateways'][gateway]['until'], settings['exitvpn']['conf']['date_format'])
+            until = datetime.strptime(
+                settings['exitvpn']['gateways'][gateway]['until'],
+                settings['exitvpn']['conf']['date_format']
+            )
             delta = until - now
-            f = 'overdue' if delta <= timedelta(days=0) else 'warning' if delta <= timedelta(days=settings['exitvpn']['conf']['warndays']) else 'good'
-            res[f].append({
+            flag = 'good'
+            if delta <= timedelta(days=0):
+                flag = 'overdue'
+            elif delta <= timedelta(days=warndays):
+                flag = 'warning'
+            res[flag].append({
                 gateway: settings['exitvpn']['gateways'][gateway]
             })
 
     photon.m('results', more=res)
 
-    if now.weekday() == settings['exitvpn']['conf']['digestday'] or res['warning']:
-        punchline = 'Achtung! VPN Account läuft aus' if res['warning'] else 'VPN Wochenbericht'
+    if now.weekday() == digestday or res['warning']:
+
+        punchline = 'VPN Wochenbericht'
+        if res['warning']:
+            punchline = 'Achtung! VPN Account läuft aus'
+
         mail = photon.mail_handler(
             to=settings['common']['mailto']['admin'],
-            cc=[ settings['common']['mailto']['kontakt_mz'], settings['common']['mailto']['kontakt_wi'] ],
+            cc=[
+                settings['common']['mailto']['kontakt_mz'],
+                settings['common']['mailto']['kontakt_wi']
+            ],
             sender=settings['common']['mailto']['local'],
             subject='photon exitVPN notify',
             punchline=punchline,
@@ -49,9 +67,11 @@ def nagg_exitvpn_accouts():
         )
         mail.text = ''
         mail.text = res
-        mail.text = 'Do not forget to update the exitvpn.yaml ( https://github.com/freifunk-mwu/gateway-configs.git )'
+        mail.text = 'Do not forget to update the exitvpn.yaml ' \
+                    '( https://github.com/freifunk-mwu/gateway-configs.git )'
         mail.text = ''
         mail.send
+
 
 if __name__ == '__main__':
     nagg_exitvpn_accouts()
