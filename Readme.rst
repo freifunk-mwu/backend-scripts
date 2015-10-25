@@ -50,6 +50,3 @@ mirror_openwrt_repo_srv.py
     Sollte nur auf Service Maschinen laufen. Benötigt viel Speicherplatz.
 
     Allein für stable Barrier Breaker werden ca. 36 GiB benötigt.
-
-sync_ffapi_srv.py
-    Synchronisiert die Freifunk-API Files mit ihren jeweiligen Repos (`mz <https://github.com/freifunk-mwu/ffapi-mainz>`_; `wi <https://github.com/freifunk-mwu/ffapi-wiesbaden>`_).

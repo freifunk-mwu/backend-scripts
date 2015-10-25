@@ -4,6 +4,12 @@ from common import pinit
 
 
 def sync_ffapi():
+    '''
+    Synchronizes the Freifunk-API Files with it's repositories
+
+    :Mainz: https://github.com/freifunk-mwu/ffapi-mainz
+    :Wiesbaden: https://github.com/freifunk-mwu/ffapi-wiesbaden
+    '''
     photon, settings = pinit('sync_ffapi', verbose=True)
 
     for community in settings['common']['communities']:
