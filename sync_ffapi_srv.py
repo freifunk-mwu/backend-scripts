@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 
-def sync_ffapi():
-    from common import pinit
+from common import pinit
 
+
+def sync_ffapi():
     photon, settings = pinit('sync_ffapi', verbose=True)
 
     for community in settings['common']['communities']:
@@ -13,6 +14,7 @@ def sync_ffapi():
         git.cleanup
 
         git.publish
+
 
 if __name__ == '__main__':
     sync_ffapi()
