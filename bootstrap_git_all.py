@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
+'''
+This script should be run (once) in the beginning, so that the other scripts
+can work.
 
+Repo-Access-Syntax: ``ssh://github_mwu/freifunk-mwu/backend-scripts.git``
+'''
 from photon.util.files import read_file, write_file
 from photon.util.locations import search_location
 
@@ -18,6 +23,16 @@ Host ${gh_ident}
 
 
 def bootstrap_git():
+    '''
+    Creates an ssh-keypair (*hostname_rsa*, *hostname_rsa.pub*) and
+    adds them for unified access to GitHub into the ``~/.ssh/config``.
+
+    Do not forget to add the generated key to the GitHub-User
+    `ffmwu <https://github.com/freifunkmwu>`_.
+    It is member of the group
+    `machines <https://github.com/orgs/freifunk-mwu/teams/machines>`_,
+    and thus has access to all needed reposotories.
+    '''
     photon, settings = pinit('bootstrap_git', verbose=True)
 
     def mkprv_ssh():

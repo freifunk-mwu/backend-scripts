@@ -24,13 +24,6 @@ Installation/Betrieb
 
 Die `Installation <http://gluon-gateway-doku.readthedocs.org/de/latest/operations/scripts.html>`_ ist Teil der Gluon Gateway Dokumentation.
 
-bootstrap_git_all.py
-    Zu Beginn sollte man (einmalig) Git einrichten, so dass die anderen Skripte funkionieren.
-
-        Erzeugt ein ssh-Keypaar (*hostname_rsa*, *hostname_rsa.pub*), und hinterlegt diesen für eiheitlichen Zugriff auf Github in die ``~/.ssh/config``. Nicht vergessen, den Schlüssel dem `Nutzer ffmwu <https://github.com/freifunkmwu>`_ hinterlegen. Dieser hat über die `Gruppe machines <https://github.com/orgs/freifunk-mwu/teams/machines>`_ Zugriff auf die benötigten Repositories
-
-    Repo-Zugriffs-Syntax: ``ssh://github_mwu/freifunk-mwu/backend-scripts.git``
-
 deploy_ssh_all.py
     Danach kann man die fehlenden pubkeys der Kollegen nachtragen.
 
