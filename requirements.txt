@@ -1,1 +1,1 @@
-photon_core>=0.4a9
+photon_core == 0.4
