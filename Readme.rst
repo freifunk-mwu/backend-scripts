@@ -24,15 +24,6 @@ Installation/Betrieb
 
 Die `Installation <http://gluon-gateway-doku.readthedocs.org/de/latest/operations/scripts.html>`_ ist Teil der Gluon Gateway Dokumentation.
 
-deploy_ssh_all.py
-    Danach kann man die fehlenden pubkeys der Kollegen nachtragen.
-
-    Setzt noch nicht vorhandene Schlüssel aus dem `gateway-configs Repository <https://github.com/freifunk-mwu/gateway-configs>`_ in die ``~/.ssh/authorized_keys``.
-
-    .. note::
-        Obwohl theoretisch immer Backups angelegt werden, schaut es in der Praxis meist anders aus.
-
-        Es kann auch nicht verhindert werden, dass man sich aus dem eigenen Server aussperrt. Deshalb immer **davor** eine zweite ssh Verbindung öffnen, und **danach** *immer* die Ergebnisse überprüfen!
 
 Diensteserver
 ^^^^^^^^^^^^^

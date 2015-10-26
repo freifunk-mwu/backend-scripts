@@ -1,11 +1,23 @@
 #!/usr/bin/env python3
+'''
+Don't lock yourself out of your machine!
 
+Please open a **second** ssh connection **before** running this script,
+and check the results twice.
+'''
 from argparse import ArgumentParser
 
 from common import pinit
 
 
 def deploy_ssh():
+    '''
+    Adds keys into the ``~/.ssh/authorized_keys`` which are not already there.
+
+    The Keys are read from the ``ssh.yaml`` inside the
+    `gateway-configs <https://github.com/freifunk-mwu/gateway-configs>`_
+    repository.
+    '''
     parser = ArgumentParser(prog='deploy_ssh')
     photon, settings = pinit('deploy_ssh', verbose=True)
 
