@@ -6,7 +6,7 @@ from common import pinit
 
 
 def deploy_ssh():
-    argp = ArgumentParser(prog='deploy_ssh')
+    parser = ArgumentParser(prog='deploy_ssh')
     photon, settings = pinit('deploy_ssh', verbose=True)
 
     # initialize the gateway-configs repo ...
@@ -26,16 +26,16 @@ def deploy_ssh():
         )
     photon.s2m
 
-    argp.add_argument(
+    parser.add_argument(
         'mtype',
         action='store',
         choices=settings['ssh_deploy'].keys()
     )
-    argp = argp.parse_args()
+    args = parser.parse_args()
 
-    for key in settings['ssh_deploy'][argp.mtype]:
+    for key in settings['ssh_deploy'][args.mtype]:
         conf_t = photon.template_handler(
-            '%s\n' % (settings['ssh_deploy'][argp.mtype][key])
+            '%s\n' % (settings['ssh_deploy'][args.mtype][key])
         )
         conf_t.write(settings['crypt']['ssh']['authorized'])
 
