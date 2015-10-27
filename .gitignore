@@ -1,2 +1,3 @@
 common/ffmwu_config.yaml
+docs/_build/
 *.pyc
