@@ -8,7 +8,7 @@ from common import pinit
 def nagg_exitvpn_accouts():
     '''
     Runs through a list of VPN-accounts inside the
-    `gateway configs <https://github.com/freifunk-mwu/gateway-configs.git> `_,
+    `gateway configs <https://github.com/freifunk-mwu/gateway-configs.git>`_,
     and sends mails.
 
     Either as weekly digest, or as daily reminder, a week before a VPN-account
