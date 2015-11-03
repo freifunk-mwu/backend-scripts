@@ -16,6 +16,7 @@ def gen_documentation():
     `rtfm.freifunk-mwu.de <http://rtfm.freifunk-mwu.de>`_,
     the mirrored repos are currently:
 
+        :backend_scripts: https://github.com/freifunk-mwu/backend-scripts
         :gluon_builder: https://github.com/freifunk-mwu/gluon-builder-ffmwu
         :gluon_gateway: https://github.com/freifunk-mwu/technik-meta
         :photon: https://github.com/spookey/photon
