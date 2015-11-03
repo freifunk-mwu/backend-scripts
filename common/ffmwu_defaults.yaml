@@ -79,6 +79,9 @@ fastd:
         local: !loc_join ['/etc/fastd', *FASTD_WI_IF, 'peers']
         remote: !str_join ['ssh://', *GITHUB_IDENT ,'/freifunk-mwu/peers-ffwi.git']
         pidfile: !loc_join ['/var/run', !str_join ['fastd.', *FASTD_WI_IF, '.pid']]
+    _bingen:
+        local: !loc_join ['/etc/fastd', *FASTD_MZ_IF, 'peers_bingen']
+        remote: 'https://github.com/freifunk-bingen/peers-ffbin'
 ffapi:
     mz:
         local: !loc_join ['/var/www/ffapi-mainz']
