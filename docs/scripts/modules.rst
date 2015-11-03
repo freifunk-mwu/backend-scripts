@@ -13,7 +13,6 @@ Modules
    draw_traffic_all
    gen_documentation_srv
    gen_website_all
-   mirror_openwrt_repo_srv
    nagg_exitvpn_accouts_all
    snapshot_configs_all
    sync_ffapi_srv
