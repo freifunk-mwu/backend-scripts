@@ -26,10 +26,6 @@ crypt:
         pub: &S_PU !str_join [*S_PR, '.pub']
         authorized: &S_AU !loc_join [*S_FL, 'authorized_keys']
         conf: &S_CN !loc_join [*S_FL, 'config']
-    ecdsa:
-        folder: &E_FL !loc_join ['home_dir', '.ecdsa']
-        prv: !loc_join [*E_FL, !str_join ['hostname', '.prv']]
-        pub: &E_PU !loc_join [*E_FL, !str_join ['hostname', '.pub']]
 configs:
     local: &SN_L !loc_join ['data_dir', 'gateway-configs.git']
     remote: !str_join ['ssh://', *GH_ID ,'/freifunk-mwu/gateway-configs.git']
