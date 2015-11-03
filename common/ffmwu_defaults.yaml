@@ -1,6 +1,6 @@
 batman:
-    bw_up: &BW_UP '96MBit'
-    bw_dn: &BW_DN '96MBit'
+    _bw_up: &BW_UP '96MBit'
+    _bw_dn: &BW_DN '96MBit'
     mz:
         interface: 'mzBAT'
         bandwidth: !str_join [*BW_UP, '/', *BW_DN]
@@ -10,7 +10,7 @@ batman:
 common:
     communities: ['mz', 'wi']
     domain: &DOMAIN 'freifunk-mwu.de'
-    gh_ident: &GH_ID 'github_mwu'
+    gh_ident: &GITHUB_IDENT 'github_mwu'
     hostname: !str_join ['hostname']
     interface: &MAIN_IF 'eth0'
     mailto:
@@ -20,33 +20,33 @@ common:
         kontakt_wi: !str_join ['info', '@', 'freifunk-wiesbaden', '.', 'de']
 crypt:
     ssh:
-        folder: &S_FL !loc_join ['home_dir', '.ssh']
-        prv_s: &S_SR !str_join ['hostname', '_rsa']
-        prv: &S_PR !loc_join [*S_FL, *S_SR]
-        pub: &S_PU !str_join [*S_PR, '.pub']
-        authorized: &S_AU !loc_join [*S_FL, 'authorized_keys']
-        conf: &S_CN !loc_join [*S_FL, 'config']
+        folder: &SSH_FOLDER !loc_join ['home_dir', '.ssh']
+        prv_s: &SSH_SNAME !str_join ['hostname', '_rsa']
+        prv: &SSH_PRIVATE !loc_join [*SSH_FOLDER, *SSH_SNAME]
+        pub: &SSH_PUBLIC !str_join [*SSH_PRIVATE, '.pub']
+        authorized: &SSH_AUTHORIZED !loc_join [*SSH_FOLDER, 'authorized_keys']
+        conf: &SSH_CONFIG !loc_join [*SSH_FOLDER, 'config']
 configs:
-    local: &SN_L !loc_join ['data_dir', 'gateway-configs.git']
-    remote: !str_join ['ssh://', *GH_ID ,'/freifunk-mwu/gateway-configs.git']
-    exitvpn: !loc_join [*SN_L, 'exitvpn.yaml']
-    queue: !loc_join [*SN_L, 'queue.yaml']
-    qadd: [*S_PU, *S_CN, *S_AU, *E_PU]
-    ssh_deploy: !loc_join [*SN_L, 'ssh.yaml']
-    target: !loc_join [*SN_L, !str_join ['hostname']]
+    local: &GWCONFIGS_L !loc_join ['data_dir', 'gateway-configs.git']
+    remote: !str_join ['ssh://', *GITHUB_IDENT ,'/freifunk-mwu/gateway-configs.git']
+    exitvpn: !loc_join [*GWCONFIGS_L, 'exitvpn.yaml']
+    queue: !loc_join [*GWCONFIGS_L, 'queue.yaml']
+    qadd: [*SSH_PUBLIC, *SSH_CONFIG, *SSH_AUTHORIZED]
+    ssh_deploy: !loc_join [*GWCONFIGS_L, 'ssh.yaml']
+    target: !loc_join [*GWCONFIGS_L, !str_join ['hostname']]
 documentation:
     local: &RTFM_L !loc_join ['data_dir', 'rtfm']
     output: !loc_join ['/var/www/rtfm/']
     builddir: !loc_join [*RTFM_L, '_builds']
     repositories:
         gluon_builder:
-            remote: !str_join ['ssh://', *GH_ID ,'/freifunk-mwu/gluon-builder-ffmwu.git']
+            remote: !str_join ['ssh://', *GITHUB_IDENT ,'/freifunk-mwu/gluon-builder-ffmwu.git']
             docpath: 'docs'
         gluon_gateway:
-            remote: !str_join ['ssh://', *GH_ID ,'/freifunk-mwu/technik-meta.git']
+            remote: !str_join ['ssh://', *GITHUB_IDENT ,'/freifunk-mwu/technik-meta.git']
             docpath: 'gluon_gateway_doku'
         photon:
-            remote: !str_join ['ssh://', *GH_ID ,'/spookey/photon.git']
+            remote: !str_join ['ssh://', *GITHUB_IDENT ,'/spookey/photon.git']
             docpath: 'docs'
 exitping:
     addresses:
@@ -58,7 +58,7 @@ exitping:
     urls:
     - 'freifunk-mainz.de'
     - 'freifunk-wiesbaden.de'
-    - 'freifunk-mwu.de'
+    # - 'freifunk-mwu.de'
     - 'cccmz.de'
     - 'freifunk.net'
     - 'ccc.de'
@@ -69,20 +69,20 @@ fastd:
     mz:
         interface: &FASTD_MZ_IF 'mzVPN'
         local: !loc_join ['/etc/fastd', *FASTD_MZ_IF, 'peers']
-        remote: !str_join ['ssh://', *GH_ID ,'/freifunk-mwu/peers-ffmz.git']
+        remote: !str_join ['ssh://', *GITHUB_IDENT ,'/freifunk-mwu/peers-ffmz.git']
         pidfile: !loc_join ['/var/run', !str_join ['fastd.', *FASTD_MZ_IF, '.pid']]
     wi:
         interface: &FASTD_WI_IF 'wiVPN'
         local: !loc_join ['/etc/fastd', *FASTD_WI_IF, 'peers']
-        remote: !str_join ['ssh://', *GH_ID ,'/freifunk-mwu/peers-ffwi.git']
+        remote: !str_join ['ssh://', *GITHUB_IDENT ,'/freifunk-mwu/peers-ffwi.git']
         pidfile: !loc_join ['/var/run', !str_join ['fastd.', *FASTD_WI_IF, '.pid']]
 ffapi:
     mz:
         local: !loc_join ['/var/www/ffapi-mainz']
-        remote: !str_join ['ssh://', *GH_ID ,'/freifunk-mwu/ffapi-mainz.git']
+        remote: !str_join ['ssh://', *GITHUB_IDENT ,'/freifunk-mwu/ffapi-mainz.git']
     wi:
         local: !loc_join ['/var/www/ffapi-wiesbaden']
-        remote: !str_join ['ssh://', *GH_ID ,'/freifunk-mwu/ffapi-wiesbaden.git']
+        remote: !str_join ['ssh://', *GITHUB_IDENT ,'/freifunk-mwu/ffapi-wiesbaden.git']
 icvpn:
     interface: &ICVPN_IF 'icVPN'
     repositories:
