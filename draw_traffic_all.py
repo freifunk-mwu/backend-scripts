@@ -54,7 +54,8 @@ def draw_traffic():
     ).get('out', '')
 
     interfaces = settings['web']['traffic']['interfaces'] + [
-        settings['fastd'][com]['interface'] for com in settings['fastd'].keys()
+        settings['fastd'][com]['interface'] for
+        com in settings['common']['communities']
     ]
     for interface in interfaces:
         if interface in avail_if:
