@@ -84,17 +84,17 @@ ffapi:
         local: !loc_join ['/var/www/ffapi-wiesbaden']
         remote: !str_join ['ssh://', *GH_ID ,'/freifunk-mwu/ffapi-wiesbaden.git']
 icvpn:
-    interface: &IC_IF 'icVPN'
+    interface: &ICVPN_IF 'icVPN'
     repositories:
-        scripts: &IC_SCRIPTS
+        scripts: &ICVPN_SCRIPTS
             remote: 'https://github.com/freifunk/icvpn-scripts'
             local: !loc_join ['data_dir', 'icvpn-scripts.git']
-        meta: &IC_META
+        meta: &ICVPN_META
             remote: 'https://github.com/freifunk/icvpn-meta'
             local: !loc_join ['data_dir', 'icvpn-meta.git']
     bird:
-        scripts: *IC_SCRIPTS
-        meta: *IC_META
+        scripts: *ICVPN_SCRIPTS
+        meta: *ICVPN_META
         confdir: &BIRD_DIR  '/etc/bird/'
         ip_ver:
             4:
@@ -108,16 +108,16 @@ icvpn:
                 roa_maxlen: '64'
                 exec: 'bird6'
     icdns:
-        scripts: *IC_SCRIPTS
-        meta: *IC_META
-        confdir: &ICDNS_DIR  '/etc/bind/'
-        conf: !loc_join [*ICDNS_DIR, 'named.conf.icvpn']
+        scripts: *ICVPN_SCRIPTS
+        meta: *ICVPN_META
+        confdir: &ICVPN_DNS_DIR  '/etc/bind/'
+        conf: !loc_join [*ICVPN_DNS_DIR, 'named.conf.icvpn']
     tinc:
         remote: 'https://github.com/freifunk/icvpn'
-        local: &TINC_DIR '/etc/tinc/icVPN'
-        conf: !loc_join [*TINC_DIR, 'tinc.conf']
-        hosts: !loc_join [*TINC_DIR, 'hosts']
-        pidfile: !loc_join ['/var/run', !str_join ['tinc.', *IC_IF, '.pid']]
+        local: &ICVPN_TINC_DIR '/etc/tinc/icVPN'
+        conf: !loc_join [*ICVPN_TINC_DIR, 'tinc.conf']
+        hosts: !loc_join [*ICVPN_TINC_DIR, 'hosts']
+        pidfile: !loc_join ['/var/run', !str_join ['tinc.', *ICVPN_IF, '.pid']]
         exec: 'tinc'
         iamdb: # :)
             kaschu: 'wiesbaden2'
@@ -134,7 +134,7 @@ web:
         - who -H
     traffic:
         dbdir: &TR_DB !loc_join ['/var/lib/vnstat']
-        interfaces: [*MAIN_IF, *EXIT_IF, *IC_IF] # plus all fastd interfaces
+        interfaces: [*MAIN_IF, *EXIT_IF, *ICVPN_IF] # plus all fastd interfaces
         types:
         - ['s', 'summary']
         - ['m', 'monthly']
