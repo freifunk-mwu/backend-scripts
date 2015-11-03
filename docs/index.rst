@@ -9,6 +9,7 @@ Dokumentation
 .. toctree::
    :maxdepth: 4
 
+   extra
    scripts/modules
 
 

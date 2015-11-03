@@ -1,36 +1,21 @@
 Backend Scripts
 ===============
 
-Hier werden Skripte gesammelt, die auf den Gates zum Einsatz kommen.
+This is a collection of scripts, running on our gateways and service machines.
 
-_etc/dot2json.pl
-   Wandelt ein dot file, wie es als Topo aus tinc fällt, in ein json file, wie force directed graph (D3) es erwartet.
+Most of them make use of the `photon <http://photon.readthedocs.org>`_ backend.
 
-   Nutzt nur stdin und stdout.
+Please also see the `Installation <http://gluon-gateway-doku.readthedocs.org/de/latest/operations/scripts.html>`_-part of the gluon gateway doku.
 
-----
-
-`Photon <http://photon.readthedocs.org>`_ Skripte
--------------------------------------------------
-
-Die Endungen der Scripte beschreiben auf welchem Typ von Maschine diese i.d.R. laufen sollen:
+The last letters of the name defines the type of machine, the script is intended to run:
 
 :_gw: Gateways
-:_srv: Diensteserver
-:_all: Alle (Gateways, Diensteserver, Buildserver, Webserver, ...)
+:_srv: Service Machines
+:_all: All of them (Gateways, Service Machines, Buildserver, Webserver, ...)
 
-Installation/Betrieb
-^^^^^^^^^^^^^^^^^^^^
+|
 
-Die `Installation <http://gluon-gateway-doku.readthedocs.org/de/latest/operations/scripts.html>`_ ist Teil der Gluon Gateway Dokumentation.
+Rendered documentation is (also) available here:
 
-
-Diensteserver
-^^^^^^^^^^^^^
-
-mirror_openwrt_repo_srv.py
-    Erstellt einen OpenWRT Mirror mit Hilfe von **lftp**.
-
-    Sollte nur auf Service Maschinen laufen. Benötigt viel Speicherplatz.
-
-    Allein für stable Barrier Breaker werden ca. 36 GiB benötigt.
+* `gluon-backend-scripts-doku <http://gluon-backend-scripts-doku.readthedocs.org/en/latest/>`_ on readthedocs,
+* `our dokumentation server <http://rtfm.freifunk-mwu.de/backend_scripts/>`_, or from inside the mesh (`mz <http://rtfm.ffmz.org/backend_scripts/>`_, `wi <http://rtfm.ffwi.org/backend_scripts/>`_).
