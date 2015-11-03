@@ -1,7 +1,0 @@
-#!/bin/bash
-
-HDIR=/etc/tinc/icVPN/.git/hooks
-
-if [ -f "$HDIR/post-merge" ]; then
-    mv -v "$HDIR/post-merge" "$HDIR/post-merge.obsolete"
-fi
