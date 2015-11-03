@@ -122,9 +122,9 @@ icvpn:
         remote: 'https://github.com/freifunk/icvpn'
         local: &ICVPN_TINC_DIR '/etc/tinc/icVPN'
         conf: !loc_join [*ICVPN_TINC_DIR, 'tinc.conf']
+        conf_tpl: !loc_join ['call_dir', 'common', 'tinc.conf.tpl']
         hosts: !loc_join [*ICVPN_TINC_DIR, 'hosts']
-        pidfile: !loc_join ['/var/run', !str_join ['tinc.', *ICVPN_IF, '.pid']]
-        exec: 'tinc'
+        metanodes: !loc_join [*ICVPN_TINC_DIR, 'metanodes']
         iamdb: # :)
             kaschu: 'wiesbaden2'
             lotuswurzel: 'wiesbaden1'
