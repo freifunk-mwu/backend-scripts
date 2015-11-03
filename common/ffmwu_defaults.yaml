@@ -49,22 +49,22 @@ documentation:
             remote: !str_join ['ssh://', *GH_ID ,'/spookey/photon.git']
             docpath: 'docs'
 exitping:
-        addresses:
-        - '95.143.172.211' # freifunk-mainz.de
-        - '95.143.172.219' # freifunk-wiesbaden.de
-        - '144.76.185.220' # cccmz.de
-        - '217.197.80.240' # freifunk.net
-        - '213.73.89.123'  # ccc.de
-        urls:
-        - 'freifunk-mainz.de'
-        - 'freifunk-wiesbaden.de'
-        - 'freifunk-mwu.de'
-        - 'cccmz.de'
-        - 'freifunk.net'
-        - 'ccc.de'
-        - 'penisland.net'
-        interface: &EXIT_IF 'exitVPN'
-        min_ratio: 0.6
+    addresses:
+    - '95.143.172.211' # freifunk-mainz.de
+    - '95.143.172.219' # freifunk-wiesbaden.de
+    - '5.9.50.141'     # cccmz.de
+    - '217.197.80.240' # freifunk.net
+    - '213.73.89.123'  # ccc.de
+    urls:
+    - 'freifunk-mainz.de'
+    - 'freifunk-wiesbaden.de'
+    - 'freifunk-mwu.de'
+    - 'cccmz.de'
+    - 'freifunk.net'
+    - 'ccc.de'
+    - 'penisland.net'
+    interface: &EXIT_IF 'exitVPN'
+    min_ratio: 0.6
 fastd:
     mz:
         interface: &FASTD_MZ_IF 'mzVPN'
