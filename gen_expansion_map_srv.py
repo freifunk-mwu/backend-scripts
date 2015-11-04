@@ -78,7 +78,7 @@ def gen_expansion_map():
                     patch
                 ))
 
-            # copy generated files
+            # copy generated files & folders
             search_location(sub['output'], create_in=sub['output'])
             for folder in ['js', 'css']:
                 change_location(
@@ -86,7 +86,7 @@ def gen_expansion_map():
                     path.join(sub['output'], folder),
                     move=False
                 )
-            for fdoc in ['nodes.geojson', 'index.html', 'LICENCE']:
+            for fdoc in ['nodes.geojson', 'index.html', 'LICENSE']:
                 change_location(
                     path.join(settings['expansion']['local'], fdoc),
                     sub['output'],
