@@ -68,6 +68,32 @@ exitping:
     - 'penisland.net'
     interface: &EXIT_IF 'exitVPN'
     min_ratio: 0.6
+expansion:
+    local: &EXPAN_L !loc_join ['data_dir', 'ffrn-expansion-map.git']
+    _descr: &EXPAN_DESCR 'Knoten Einzugsgebiet und Verteilung'
+    maps:
+        mwu:
+            descr: !str_join ['Freifunk Mainz, Wiesbaden & Umgebung', '</br>', *EXPAN_DESCR]
+            ipos: [50.034130, 8.223422]
+            output: &EXPAN_OUT '/var/www/ffmwu-expansion-map'
+            title: !str_join ['FFMWU', ' ', *EXPAN_DESCR]
+            url: 'http://map.freifunk-mwu.de/data/nodelist.json'
+        mz:
+            descr: !str_join ['Freifunk Mainz', '</br>', *EXPAN_DESCR]
+            ipos: [50.034130, 8.223422]
+            output: !loc_join [*EXPAN_OUT, 'mainz']
+            title: !str_join ['FFMZ', ' ', *EXPAN_DESCR]
+            url: 'http://map.freifunk-mainz.de/data/nodelist.json'
+        wi:
+            descr: !str_join ['Freifunk Wiesbaden', '</br>', *EXPAN_DESCR]
+            ipos: [50.034130, 8.223422]
+            output: !loc_join [*EXPAN_OUT, 'wiesbaden']
+            title: !str_join ['FFWI', ' ', *EXPAN_DESCR]
+            url: 'http://map.wiesbaden.freifunk.net/data/nodelist.json'
+    patch:
+        - !loc_join [*EXPAN_L, 'index.html']
+        - !loc_join [*EXPAN_L, 'js', 'app.js']
+    remote: 'https://github.com/Freifunk-Rhein-Neckar/ffrn-expansion-map'
 fastd:
     mz:
         interface: &FASTD_MZ_IF 'mzVPN'

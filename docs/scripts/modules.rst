@@ -12,6 +12,7 @@ Modules
    deploy_ssh_all
    draw_traffic_all
    gen_documentation_srv
+   gen_expansion_map_srv
    gen_website_all
    nagg_exitvpn_accouts_all
    snapshot_configs_all
