@@ -25,7 +25,7 @@ def deploy_ssh():
     photon.git_handler(
         settings['configs']['local'],
         remote_url=settings['configs']['remote']
-    )
+    )._update()
 
     # .. to load contents from the ssh.yaml into the settings
     if not photon.settings.load(

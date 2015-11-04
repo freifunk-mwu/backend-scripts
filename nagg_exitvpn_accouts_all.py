@@ -20,7 +20,7 @@ def nagg_exitvpn_accouts():
     photon.git_handler(
         settings['configs']['local'],
         remote_url=settings['configs']['remote']
-    )
+    )._update()
 
     # .. to load contents from the exitvpn.yaml into the settings
     if not photon.settings.load('exitvpn', settings['configs']['exitvpn']):
