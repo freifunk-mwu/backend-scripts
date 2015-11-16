@@ -157,7 +157,7 @@ icvpn:
             spinat: 'mainz2'
             wasserfloh: 'mainz1'
 web:
-    output: !loc_join ['/var/www/html']
+    output: &HTML_ROOT_DIR !loc_join ['/var/www/html']
     system:
         - uptime
         - hostname -i
@@ -173,3 +173,18 @@ web:
         - ['d', 'daily']
         - ['h', 'hourly']
         - ['t', 'top10']
+limit:
+    additional: 8
+    fastd:
+        mz:
+            fastd: !loc_join ['/etc/fastd/mzVPN/fastd.conf']
+            sockfile: !loc_join ['/var/run/fastd-mz.status']
+        wi:
+            fastd: !loc_join ['/etc/fastd/wiVPN/fastd.conf']
+            sockfile: !loc_join ['/var/run/fastd-wi.status']
+    fastd_status: !loc_join ['/usr/local/bin/fastd-status']
+    query: ['kaschu', 'lotuswurzel', 'spinat', 'wasserfloh']
+    stat: &LIMIT_STAT fastd_status.json
+    stat_ext: !str_join ['http://%s.freifunk-mwu.de/', *LIMIT_STAT]
+    stat_local: !loc_join [*HTML_ROOT_DIR, *LIMIT_STAT]
+    timeout: 900

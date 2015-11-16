@@ -14,6 +14,7 @@ Modules
    gen_documentation_srv
    gen_expansion_map_srv
    gen_website_all
+   limit_fastd_peers_gw
    nagg_exitvpn_accouts_all
    snapshot_configs_all
    sync_ffapi_srv
