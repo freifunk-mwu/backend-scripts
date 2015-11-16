@@ -102,7 +102,7 @@ class Peers:
 
         self.peers = {}
 
-        # self.pull_remote()
+        self.pull_remote()
         self.pull_local()
 
     def pull_remote(self):
@@ -140,7 +140,7 @@ class Peers:
         for com in self.communities:
             status = self.p.m(
                 'running fastd-status for %s' % (com),
-                cmdd=dict(cmd='ssh kaschu "sudo %s %s"' % (
+                cmdd=dict(cmd='sudo %s %s' % (
                     self.fastd_status,
                     self.fastd[com]['sockfile']
                 )),
