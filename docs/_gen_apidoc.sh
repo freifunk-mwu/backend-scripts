@@ -7,5 +7,6 @@ sphinx-apidoc \
     --force \
     --output-dir "$CDIR/scripts" \
     --private \
+    --module-first \
     --separate \
     "$CDIR/.."

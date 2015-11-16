@@ -11,9 +11,11 @@ You may or may not see the results for:
 '''
 from os import path
 from re import sub as re_sub
-from common import pinit
-from photon.util.locations import change_location, search_location
+
 from photon.util.files import read_file, write_file
+from photon.util.locations import change_location, search_location
+
+from common import pinit
 
 
 def gen_expansion_map():
