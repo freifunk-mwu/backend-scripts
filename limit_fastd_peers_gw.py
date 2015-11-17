@@ -102,8 +102,8 @@ class Peers:
 
         self.peers = {}
 
-        self.pull_remote()
         self.pull_local()
+        self.pull_remote()
 
     def pull_remote(self):
         '''
@@ -241,7 +241,6 @@ def limit_fastd_peers():
     photon, settings = pinit('limit_fastd_peers')
 
     peers = Peers(photon)
-    restart_required = False
 
     for community, limit in peers.limit():
 
@@ -258,17 +257,17 @@ def limit_fastd_peers():
                 fields={'limit': limit}
             )
             if config != template.sub:
-                restart_required = True
+                photon.m(
+                    'fastd restart for %s required' % (community),
+                    cmdd=dict(cmd='sudo service fastd restart %s' % (
+                        settings['limit']['fastd'][community]['interface']
+                    ))
+                )
 
             template.write(config_file, append=False, backup=False)
         else:
             photon.m('error writing fastd config for %s' % (community))
 
-    if restart_required:
-        photon.m(
-            'fastd restart required',
-            cmdd=dict(cmd='sudo service fastd restart')
-        )
 
 if __name__ == '__main__':
     limit_fastd_peers()

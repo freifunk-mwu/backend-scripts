@@ -178,9 +178,11 @@ limit:
     fastd:
         mz:
             fastd: !loc_join ['/etc/fastd/mzVPN/fastd.conf']
+            interface: *FASTD_MZ_IF
             sockfile: !loc_join ['/var/run/fastd-mz.status']
         wi:
             fastd: !loc_join ['/etc/fastd/wiVPN/fastd.conf']
+            interface: *FASTD_WI_IF
             sockfile: !loc_join ['/var/run/fastd-wi.status']
     fastd_status: !loc_join ['/usr/local/bin/fastd-status']
     query: ['kaschu', 'lotuswurzel', 'spinat', 'wasserfloh']
