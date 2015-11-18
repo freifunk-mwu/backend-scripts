@@ -16,6 +16,7 @@ To create configuration for fastd, the existing one is used, but with
 
 from datetime import datetime
 from json import loads
+from re import search as re_search
 from re import sub as re_sub
 from socket import gaierror
 from urllib.error import HTTPError, URLError
@@ -148,12 +149,15 @@ class Peers:
             )
             if status.get('returncode') == 0:
                 current = unload_json(self.p, '\n'.join(status.get('stdout')))
-                if current.get('peers'):
+                if current.get('peers') and current.get('uptime'):
                     connected = [
                         p for p in current['peers'].values() if
                         p.get('connection')
                     ]
-                    res[com] = {'peers': len(connected)}
+                    res[com] = {
+                        'peers': len(connected),
+                        'uptime': current.get('uptime')
+                    }
                     self.p.m('got data for %s' % (com), more=res[com])
                 else:
                     self.p.m('data for %s invalid' % (com))
@@ -224,14 +228,44 @@ class Peers:
                 com, avg_peers, gauge, limit
             ))
 
-            yield com, limit
-
             data = self.peers[self.hostname].get(com)
+
+            yield com, limit, data.get('uptime', 0)
+
             if data:
                 data.update({'limit': limit})
                 self.peers[self.hostname][com] = data
 
         self.dump_local()
+
+
+def write_fastd_config_limit(photon, com, limit, uptime):
+    LIMIT_RX = r'peer limit ([\d]+);'
+    settings = photon.settings.get
+
+    config_file = settings['limit']['fastd'][com]['fastd']
+    config = read_file(config_file)
+    if not config:
+        photon.m('no fastd config found for %s (%s)' % (com, config_file))
+        return False
+
+    match = re_search(LIMIT_RX, config)
+    if not match:
+        photon.m('no peer limit present in config for %s. skipping' % (com))
+        return False
+
+    old_limit = int(match.group(1))
+
+    template = photon.template_handler(
+        re_sub(LIMIT_RX, 'peer limit ${limit};', config),
+        fields={'limit': limit}
+    )
+    template.write(config_file, append=False, backup=False)
+
+    return any([
+        abs(limit - old_limit) >= settings['limit']['additional'],
+        uptime >= 1000 * settings['limit']['restart_max']
+    ])
 
 
 def limit_fastd_peers():
@@ -246,34 +280,16 @@ def limit_fastd_peers():
     Restarts ``fastd`` if there were any changes.
     '''
     photon, settings = pinit('limit_fastd_peers')
-
     peers = Peers(photon)
 
-    for community, limit in peers.limit():
-
-        config_file = settings['limit']['fastd'][community]['fastd']
-        config = read_file(config_file)
-        if config:
-            config_template = re_sub(
-                r'peer limit [0-9]+;',
-                'peer limit ${limit};',
-                config
+    for community, limit, uptime in peers.limit():
+        if write_fastd_config_limit(photon, community, limit, uptime):
+            photon.m(
+                'fastd restart for %s required' % (community),
+                cmdd=dict(cmd='sudo service fastd restart %s' % (
+                    settings['limit']['fastd'][community]['interface']
+                ))
             )
-            template = photon.template_handler(
-                config_template,
-                fields={'limit': limit}
-            )
-            if config != template.sub:
-                photon.m(
-                    'fastd restart for %s required' % (community),
-                    cmdd=dict(cmd='sudo service fastd restart %s' % (
-                        settings['limit']['fastd'][community]['interface']
-                    ))
-                )
-
-            template.write(config_file, append=False, backup=False)
-        else:
-            photon.m('error writing fastd config for %s' % (community))
 
 
 if __name__ == '__main__':
