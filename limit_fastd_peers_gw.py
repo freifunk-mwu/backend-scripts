@@ -201,6 +201,13 @@ class Peers:
                     online_gws += 1
                     total_peers += peers
 
+            if not online_gws:
+                self.p.m(
+                    'fatal: not a single gateway seems to be online',
+                    more='this should never happen',
+                    state=True
+                )
+
             avg_peers = int(total_peers / online_gws)
             self.p.m('%s: %s peers on %s gateways: avg %s' % (
                 com, total_peers, online_gws, avg_peers
