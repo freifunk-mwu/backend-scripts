@@ -156,7 +156,7 @@ class Peers:
                     ]
                     res[com] = {
                         'peers': len(connected),
-                        'uptime': current.get('uptime')
+                        'uptime': int(current.get('uptime', 0) / 1000)
                     }
                     self.p.m('got data for %s' % (com), more=res[com])
                 else:
@@ -264,7 +264,7 @@ def write_fastd_config_limit(photon, com, limit, uptime):
 
     return any([
         abs(limit - old_limit) >= settings['limit']['additional'],
-        uptime >= 1000 * settings['limit']['restart_max']
+        uptime >= settings['limit']['restart_max']
     ])
 
 
