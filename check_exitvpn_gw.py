@@ -10,36 +10,26 @@ def check_exitvpn():
     '''
     photon, settings = pinit('check_exitvpn', verbose=True)
 
-    uping = photon.ping_handler(net_if=settings['exitping']['interface'])
-    aping = photon.ping_handler(net_if=settings['exitping']['interface'])
+    ping = photon.ping_handler(net_if=settings['exitping']['interface'])
 
-    uping.probe = settings['exitping']['urls']
-    aping.probe = settings['exitping']['addresses']
+    ping.probe = settings['exitping']['targets']
 
-    photon.m(
-        'ping results',
-        more=dict(
-            ping_urls=uping.status,
-            ping_addresses=aping.status
-        )
-    )
+    photon.m('ping results', more=ping.status)
 
     for community in settings['common']['communities']:
-        cif = settings['batman'][community]['interface']
-        cbw = settings['batman'][community]['bandwidth']
-        urat = uping.status['ratio'] <= settings['exitping']['min_ratio']
-        arat = aping.status['ratio'] <= settings['exitping']['min_ratio']
+        interface = settings['batman'][community]['interface']
+        bandwidth = settings['batman'][community]['bandwidth']
 
-        if urat or arat:
+        if ping.status['ratio'] <= settings['exitping']['min_ratio']:
             photon.m(
                 'exitvpn for %s - it seems you are not properly connected!' % (
                     community
                 )
             )
             photon.m(
-                'removing batman server flag for %s' % (cif),
+                'removing batman server flag for %s' % (interface),
                 cmdd=dict(
-                    cmd='sudo batctl -m %s gw off' % (cif)
+                    cmd='sudo batctl -m %s gw off' % (interface)
                 )
             )
             photon.m(
@@ -52,9 +42,13 @@ def check_exitvpn():
         else:
             photon.m('exitvpn for %s - you are connected!!' % (community))
             photon.m(
-                'setting batman server flag for %s (bw: %s)' % (cif, cbw),
+                'setting batman server flag for %s (bw: %s)' % (
+                    interface, bandwidth
+                ),
                 cmdd=dict(
-                    cmd='sudo batctl -m %s gw server %s' % (cif, cbw)
+                    cmd='sudo batctl -m %s gw server %s' % (
+                        interface, bandwidth
+                    )
                 ),
             )
             photon.m(

@@ -52,20 +52,19 @@ documentation:
             remote: !str_join ['ssh://', *GITHUB_IDENT ,'/spookey/photon.git']
             docpath: 'docs'
 exitping:
-    addresses:
+    targets:
+    - '213.73.89.123'  # ccc.de
+    - '217.197.80.240' # freifunk.net
+    - '5.9.50.141'     # cccmz.de
     - '95.143.172.211' # freifunk-mainz.de
     - '95.143.172.219' # freifunk-wiesbaden.de
-    - '5.9.50.141'     # cccmz.de
-    - '217.197.80.240' # freifunk.net
-    - '213.73.89.123'  # ccc.de
-    urls:
-    - 'freifunk-mainz.de'
-    - 'freifunk-wiesbaden.de'
-    # - 'freifunk-mwu.de'
-    - 'cccmz.de'
-    - 'freifunk.net'
     - 'ccc.de'
+    - 'cccmz.de'
+    - 'freifunk-mainz.de'
+    - 'freifunk-rheinland.net'
+    - 'freifunk.net'
     - 'penisland.net'
+    - 'wiesbaden.freifunk.net'
     interface: &EXIT_IF 'exitVPN'
     min_ratio: 0.6
 expansion:
