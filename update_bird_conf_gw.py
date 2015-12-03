@@ -34,7 +34,7 @@ def update_bird_conf():
             'generating ip_ver%s bgp peers conf' % (ip_ver),
             cmdd=dict(
                 cmd='./mkbgp -f bird -%s -s %s '
-                    '-p icvpn_ -x mainz -x wiesbaden -d ebgp_ic' % (
+                    '-p icvpn_ -x mainz -x wiesbaden -x bingen -d ebgp_ic' % (
                         ip_ver,
                         settings['icvpn']['bird']['meta']['local']
                     ),
