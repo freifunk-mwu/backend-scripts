@@ -6,7 +6,7 @@ the ``limit``.
 
 This number will be added as ``limit`` to the ``fast.conf`` of each community.
 
-This will hopefully distribute the nodes better on all gateways.
+This will hopefully distribute the nodes better over all our gateways.
 
 Start with :meth:`limit_fastd_peers`
 
@@ -94,6 +94,7 @@ class Peers:
         self.stat_local = settings['limit']['stat_local']
         self.timeout = settings['limit']['timeout']
 
+        #: stop the script, if it was started on the wrong machine.
         if self.hostname not in self.gateways:
             self.p.m(
                 '%s is not in gateways' % (self.hostname),
@@ -101,8 +102,10 @@ class Peers:
                 state=True
             )
 
+        #: everything is stored in here
         self.peers = {}
 
+        #: initialize the data
         self.pull_local()
         self.pull_remote()
 
@@ -117,13 +120,16 @@ class Peers:
             if self.hostname == gw:
                 self.p.m('skipping self query %s' % (gw))
                 continue
+
             request = get_url(self.p, self.stat_ext % (gw))
             data = unload_json(self.p, request)
             if data and data.get('_timestamp'):
+                #: check remote timestamp
                 if (
                     timestamp() >= data['_timestamp'] >=
                     timestamp(rel=self.timeout)
                 ):
+                    #: copy received and valid data over
                     self.peers[gw] = data
                     self.p.m('got data for %s' % (gw), more=data)
                 else:
@@ -148,12 +154,16 @@ class Peers:
                 critical=False
             )
             if status.get('returncode') == 0:
+                #: we got data from fastd-status. unpickle the json here
                 current = unload_json(self.p, '\n'.join(status.get('stdout')))
                 if current.get('peers') and current.get('uptime'):
+                    #: filter peers without connection
                     connected = [
                         p for p in current['peers'].values() if
                         p.get('connection')
                     ]
+                    #: set own values here
+                    #: convert uptime into seconds right at the source
                     res[com] = {
                         'peers': len(connected),
                         'uptime': int(current.get('uptime', 0) / 1000)
@@ -173,6 +183,7 @@ class Peers:
         '''
         data = self.peers[self.hostname]
         if data:
+            #: update timestamp
             data.update({'_timestamp': timestamp()})
             return self.p.m(
                 'write peers file for %s to %s' % (
@@ -200,38 +211,54 @@ class Peers:
             total_gws = len(self.gateways)
             online_gws = 0
             for gw in self.gateways:
+                #: find the peers per gateway of the current community,
+                #: sum them up, if any present
                 peers = self.peers.get(gw, {}).get(com, {}).get('peers')
                 if peers:
                     online_gws += 1
                     total_peers += peers
 
             if not online_gws:
+                #: this only happens when both :meth:`pull_remote`
+                #: and :meth:`pull_local` produced no output
+                #: a.k.a ``self.peers`` is empty.
+                #: it avoids zero divisions while developing
                 self.p.m(
                     'fatal: not a single gateway seems to be online',
                     more='this should never happen',
                     state=True
                 )
 
+            #: calculate an average per gateway for current community
             avg_peers = int(total_peers / online_gws)
             self.p.m('%s: %s peers on %s gateways: avg %s' % (
                 com, total_peers, online_gws, avg_peers
             ))
 
+            #: calculate how much additional peers to provide above average
+            #: per default, it is the average plus ``additional``
+            #:
+            #: if there was any gateway not reachable,
+            #: additionally add ``additional`` per offline gateway
             offline_gws = total_gws - online_gws
             gauge = ((1 + offline_gws) * self.additional)
             self.p.m('%s: (1 + %s gateways offline) * %s additional: %s' % (
                 com, offline_gws, self.additional, gauge
             ))
 
+            #: calculate the limit
             limit = avg_peers + gauge
             self.p.m('%s: %s + %s: limit %s' % (
                 com, avg_peers, gauge, limit
             ))
 
-            data = self.peers[self.hostname].get(com)
+            #: finaly pull own data ...
+            data = self.peers.get(self.hostname, {}).get(com, {})
 
+            #: ... to report community, limit and daemon uptime ...
             yield com, limit, data.get('uptime', 0)
 
+            #: ... and to store it in ``self.peers``
             if data:
                 data.update({'limit': limit})
                 self.peers[self.hostname][com] = data
@@ -240,15 +267,27 @@ class Peers:
 
 
 def write_fastd_config_limit(photon, com, limit, uptime):
+    '''
+    Writes calculated limit to the config file of ``fastd``.
+
+    :param photon: photon instance (for error reporting, settings and helpers)
+    :param com: Community short name
+    :param limit: calculated fastd peer limit to write
+    :param uptime: current fastd daemon uptime in seconds
+    :return: ``True`` if ``fastd`` should be restarted then.
+    '''
     LIMIT_RX = r'peer limit ([\d]+);'
     settings = photon.settings.get
 
+    #: locate the fastd config
     config_file = settings['limit']['fastd'][com]['fastd']
     config = read_file(config_file)
     if not config:
         photon.m('no fastd config found for %s (%s)' % (com, config_file))
         return False
 
+    #: find current peer limit in fast config
+    #: skip the rest if none present
     match = re_search(LIMIT_RX, config)
     if not match:
         photon.m('no peer limit present in config for %s. skipping' % (com))
@@ -256,12 +295,17 @@ def write_fastd_config_limit(photon, com, limit, uptime):
 
     old_limit = int(match.group(1))
 
+    #: use the template_handler with the current fastd config,
+    #: replacing the current limit by ``${limit}`` which itself
+    #: gets substituted with the calculated limit on writing
     template = photon.template_handler(
         re_sub(LIMIT_RX, 'peer limit ${limit};', config),
         fields={'limit': limit}
     )
     template.write(config_file, append=False, backup=False)
 
+    #: return ``True`` if there was a huge bump in the limit, or
+    #: fast was running long enough..
     return any([
         abs(limit - old_limit) >= settings['limit']['additional'],
         uptime >= settings['limit']['restart_max']
@@ -274,10 +318,11 @@ def limit_fastd_peers():
     Creates ``peers`` instance, iterates over :meth:`Peers.limit` proposals
     and reads existing config files into templates.
 
-    Only if any ``peers limit 23;`` option is set, the value ``23`` is replaced
+    Only if any ``peers limit 42;`` option is set, the value ``42`` is replaced
     by ``limit``. Then, writes template.
 
-    Restarts ``fastd`` if there were any changes.
+    Restarts ``fastd`` if there were changes greater than ``additional`` or
+    fastd was running for more than ``restart_max`` seconds.
     '''
     photon, settings = pinit('limit_fastd_peers')
     peers = Peers(photon)
