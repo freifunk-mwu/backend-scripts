@@ -36,7 +36,7 @@ configs:
     target: !loc_join [*GWCONFIGS_L, !str_join ['hostname']]
 documentation:
     local: &RTFM_L !loc_join ['data_dir', 'rtfm']
-    output: !loc_join ['/var/www/rtfm/']
+    output: !loc_join ['/var/www/freifunk-mwu.de/rtfm/']
     builddir: !loc_join [*RTFM_L, '_builds']
     repositories:
         backend_scripts:
@@ -45,9 +45,9 @@ documentation:
         gluon_builder:
             remote: !str_join ['ssh://', *GITHUB_IDENT ,'/freifunk-mwu/gluon-builder-ffmwu.git']
             docpath: 'docs'
-        gluon_gateway:
+        ffmwu_gateway:
             remote: !str_join ['ssh://', *GITHUB_IDENT ,'/freifunk-mwu/technik-meta.git']
-            docpath: 'gluon_gateway_doku'
+            docpath: 'ffmwu_gateway_doku'
         photon:
             remote: !str_join ['ssh://', *GITHUB_IDENT ,'/spookey/photon.git']
             docpath: 'docs'
@@ -74,19 +74,19 @@ expansion:
         mwu:
             descr: !str_join ['Freifunk Mainz, Wiesbaden & Umgebung', '</br>', *EXPAN_DESCR]
             ipos: [50.034130, 8.223422]
-            output: &EXPAN_OUT '/var/www/ffmwu-expansion-map'
+            output: &EXPAN_OUT '/var/www/freifunk-mwu.de/einzugsgebiet'
             title: !str_join ['FFMWU', ' ', *EXPAN_DESCR]
             url: 'http://map.freifunk-mwu.de/data/nodelist.json'
         mz:
             descr: !str_join ['Freifunk Mainz', '</br>', *EXPAN_DESCR]
             ipos: [50.034130, 8.223422]
-            output: !loc_join [*EXPAN_OUT, 'mainz']
+            output: !loc_join '/var/www/freifunk-mainz.de/einzugsgebiet'
             title: !str_join ['FFMZ', ' ', *EXPAN_DESCR]
             url: 'http://map.freifunk-mainz.de/data/nodelist.json'
         wi:
             descr: !str_join ['Freifunk Wiesbaden', '</br>', *EXPAN_DESCR]
             ipos: [50.034130, 8.223422]
-            output: !loc_join [*EXPAN_OUT, 'wiesbaden']
+            output: !loc_join '/var/www/freifunk.net/einzugsgebiet.wiesbaden'
             title: !str_join ['FFWI', ' ', *EXPAN_DESCR]
             url: 'http://map.wiesbaden.freifunk.net/data/nodelist.json'
     patch:
