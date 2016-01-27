@@ -9,7 +9,7 @@ batman:
         bandwidth: !str_join [*BW_UP, '/', *BW_DN]
 common:
     communities: ['mz', 'wi']
-    domain: &DOMAIN 'freifunk-mwu.de'
+    domain: &DOMAIN 'freifunk-mainz.de'
     gh_ident: &GITHUB_IDENT 'github_mwu'
     hostname: !str_join ['hostname']
     interface: &MAIN_IF 'eth0'
