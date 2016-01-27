@@ -80,13 +80,13 @@ expansion:
         mz:
             descr: !str_join ['Freifunk Mainz', '</br>', *EXPAN_DESCR]
             ipos: [50.034130, 8.223422]
-            output: !loc_join '/var/www/freifunk-mainz.de/einzugsgebiet'
+            output: !loc_join ['/var/www/freifunk-mainz.de/einzugsgebiet']
             title: !str_join ['FFMZ', ' ', *EXPAN_DESCR]
             url: 'http://map.freifunk-mainz.de/data/nodelist.json'
         wi:
             descr: !str_join ['Freifunk Wiesbaden', '</br>', *EXPAN_DESCR]
             ipos: [50.034130, 8.223422]
-            output: !loc_join '/var/www/freifunk.net/einzugsgebiet.wiesbaden'
+            output: !loc_join ['/var/www/freifunk.net/einzugsgebiet.wiesbaden']
             title: !str_join ['FFWI', ' ', *EXPAN_DESCR]
             url: 'http://map.wiesbaden.freifunk.net/data/nodelist.json'
     patch:
