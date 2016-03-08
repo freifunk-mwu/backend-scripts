@@ -3,6 +3,7 @@
 import json
 import argparse
 import requests
+import arrow
 from datetime import datetime
 from email_validator import validate_email, EmailNotValidError, EmailSyntaxError
 
@@ -17,8 +18,8 @@ def main(params):
     nodes_without_contact = 0
 
     contactlist = list()
-    nodedict = {
-        "nodes": dict(),
+    contactdict = {
+        "contacts": dict(),
         "nodes_total": "0",
         "nodes_with_contact": "0",
         "nodes_without_contact": "0",
@@ -44,12 +45,26 @@ def main(params):
         except (KeyError, EmailSyntaxError):
             return None
 
+    def get_offline_days(timestamp):
+        datetime_now = arrow.get(now.isoformat())
+        node_lastseen = arrow.get(timestamp)
+        daydiff = datetime_now - node_lastseen
+
+        return daydiff.days
+
     for node in nodedb['nodes']:
         contact = ''
         node_out = dict()
         nodes_sum += 1
-        node_out['hostname'] = node['nodeinfo']['hostname']
-        node_out['lastseen'] = node['lastseen']
+        hostname = node['nodeinfo']['hostname']
+        node_out[hostname] = dict()
+
+        if not node['flags']['online']:
+            offline_days = get_offline_days(node['lastseen'])
+            node_out[hostname]['status'] = "offline"
+            node_out[hostname]['days_offline'] = offline_days
+        else:
+            node_out[hostname]['status'] = "online"
 
         contact = get_owner(node['nodeinfo'])
 
@@ -58,20 +73,21 @@ def main(params):
             type = contact[1]
             nodes_with_contact += 1
             if owner in contactlist:
-                nodedict['nodes'][owner].append(node_out)
+                contactdict['contacts'][owner]['nodes'].update(node_out)
             else:
                 contactlist.append(owner)
-                nodedict['nodes'][owner] = list()
-                nodedict['nodes'][owner].append(node_out)
+                contactdict['contacts'][owner] = dict()
+                contactdict['contacts'][owner]['type'] = type
+                contactdict['contacts'][owner]['nodes'] = dict()
+                contactdict['contacts'][owner]['nodes'].update(node_out)
         else:
             nodes_without_contact += 1
-            
-    nodedict['nodes_total'] = nodes_sum
-    nodedict['nodes_with_contact'] = nodes_with_contact
-    nodedict['nodes_without_contact'] = nodes_without_contact
 
-    print(json.dumps(nodedict, sort_keys=True, indent=4))
+    contactdict['nodes_total'] = nodes_sum
+    contactdict['nodes_with_contact'] = nodes_with_contact
+    contactdict['nodes_without_contact'] = nodes_without_contact
 
+    print(json.dumps(contactdict, sort_keys=True, indent=4))
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
