@@ -212,13 +212,13 @@ class Peers:
             data = self.peers.get(self.hostname, {}).get(com, {})
             with open("/home/admin/.cronlog/limit."+com+".log","a") as logfile:
                 logfile.write("%s,%d,%d,%03d,%03d,%03d" %
-                              self.hostname,data.get('_timestamp'),on_gws,
-                              data.get('limit'),data.get('peers'),total)
+                              (self.hostname,timestamp(),on_gws,
+                              data.get('limit'),data.get('peers'),total))
                 for gw in self.gateways:
                     if self.hostname != gw:
                         data = self.peers.get(gw, {}).get(com, {})
                         logfile.write(",%s,%03d,%03d" %
-                                      gw,data.get('limit'),data.get('peers'))
+                                      (gw,data.get('limit'),data.get('peers')))
             
                 logfile.write("\n")
                 
