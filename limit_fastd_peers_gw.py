@@ -193,6 +193,35 @@ class Peers:
             )
         self.p.m('no data available for %s' % (self.hostname))
 
+    def append_csv_logs(self):
+        '''
+        append a log line to static csv logs each, for long term observation
+        one log file per community
+        format: hostname,timestamp,num_gates,limit,peers,total,[other gates:hostname,limit,peers]
+        '''
+        for com in self.communities:
+            #: the following few lines just copied from "limit"
+            on_gws = 0
+            total = 0
+            for gw in self.gateways:
+                peers = self.peers.get(gw, {}).get(com, {}).get('peers')
+                if peers:
+                    on_gws += 1
+                    total += peers
+                    
+            data = self.peers.get(self.hostname, {}).get(com, {})
+            with open("/home/admin/.cronlog/limit."+com+".log","a") as logfile:
+                logfile.write("%s,%d,%d,%03d,%03d,%03d" %
+                              self.hostname,data.get('_timestamp'),on_gws,
+                              data.get('limit'),data.get('peers'),total)
+                for gw in self.gateways:
+                    if self.hostname != gw:
+                        data = self.peers.get(gw, {}).get(com, {})
+                        logfile.write(",%s,%03d,%03d" %
+                                      gw,data.get('limit'),data.get('peers'))
+            
+                logfile.write("\n")
+                
     def limit(self):
         '''
         Loops over Communities and it's Gateways, proposing a ``limit`` for
@@ -335,7 +364,7 @@ def limit_fastd_peers():
                     settings['limit']['fastd'][community]['interface']
                 ))
             )
-
+    peers.append_csv_logs()
 
 if __name__ == '__main__':
     limit_fastd_peers()
