@@ -2,6 +2,7 @@
 
 import json
 import argparse
+import re
 import requests
 import arrow
 from datetime import datetime
@@ -15,13 +16,20 @@ def main(params):
 
     nodes_sum = 0
     nodes_with_contact = 0
+    nodes_with_email = 0
+    nodes_with_twitter = 0
     nodes_without_contact = 0
+
+    email_regex = r'[\w\.-]+@[\w\.-]+'
+    twitter_regex = r'(?<=^|(?<=[^a-zA-Z0-9-_\.]))@([A-Za-z]+[A-Za-z0-9]+)'
 
     contactlist = list()
     contactdict = {
         "contacts": dict(),
         "nodes_total": "0",
         "nodes_with_contact": "0",
+        "nodes_with_email": "0",
+        "nodes_with_twitter": "0",
         "nodes_without_contact": "0",
         "updated_at": now.isoformat()
     }
@@ -36,11 +44,30 @@ def main(params):
     def get_owner(nodeinfo):
         try:
             if 'owner' in nodeinfo:
-                mail = check_email(nodeinfo['owner']['contact'].lower())
-                if mail:
-                    return (mail, "email")
+                contactstring = nodeinfo['owner']['contact'].lower()
+                maybe_email = re.search(email_regex, contactstring)
+                maybe_twitter = re.search(twitter_regex, contactstring)
+
+                if maybe_email:
+                    mail = check_email(maybe_email.group(0))
                 else:
-                    return nodeinfo['owner']['contact'].lower(), "other"
+                    mail = None
+
+                if maybe_twitter:
+                    twitter = maybe_twitter.group(0)
+                else:
+                    twitter = None
+
+                if mail and twitter:
+                    return ({ "email": mail, "twitter": twitter }, contactstring)
+                elif mail:
+                    return ({ "email": mail }, contactstring)
+                elif twitter:
+                    return ({ "twitter": twitter }, contactstring)
+                else:
+                    return ({}, contactstring)
+            else:
+                return None
 
         except (KeyError, EmailSyntaxError):
             return None
@@ -70,21 +97,29 @@ def main(params):
 
         if contact:
             owner = contact[0]
-            type = contact[1]
+            rawcontact = contact[1]
             nodes_with_contact += 1
-            if owner in contactlist:
-                contactdict['contacts'][owner]['nodes'].update(node_out)
+
+            if rawcontact in contactlist:
+                contactdict['contacts'][rawcontact]['nodes'].update(node_out)
             else:
-                contactlist.append(owner)
-                contactdict['contacts'][owner] = dict()
-                contactdict['contacts'][owner]['type'] = type
-                contactdict['contacts'][owner]['nodes'] = dict()
-                contactdict['contacts'][owner]['nodes'].update(node_out)
+                contactlist.append(rawcontact)
+                contactdict['contacts'][rawcontact] = dict()
+                contactdict['contacts'][rawcontact].update(owner)
+                contactdict['contacts'][rawcontact]['nodes'] = dict()
+                contactdict['contacts'][rawcontact]['nodes'].update(node_out)
+
+            if 'email' in owner:
+               nodes_with_email += 1
+            if 'twitter' in owner:
+               nodes_with_twitter += 1
         else:
             nodes_without_contact += 1
 
     contactdict['nodes_total'] = nodes_sum
     contactdict['nodes_with_contact'] = nodes_with_contact
+    contactdict['nodes_with_email'] = nodes_with_email
+    contactdict['nodes_with_twitter'] = nodes_with_twitter
     contactdict['nodes_without_contact'] = nodes_without_contact
 
     print(json.dumps(contactdict, sort_keys=True, indent=4))
