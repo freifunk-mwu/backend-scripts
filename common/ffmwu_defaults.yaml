@@ -109,10 +109,10 @@ fastd:
         remote: 'https://github.com/freifunk-bingen/peers-ffbin'
 ffapi:
     mz:
-        local: !loc_join ['/var/www/ffapi-mainz']
+        local: !loc_join ['/var/www/freifunk-mainz.de/api']
         remote: !str_join ['ssh://', *GITHUB_IDENT ,'/freifunk-mwu/ffapi-mainz.git']
     wi:
-        local: !loc_join ['/var/www/ffapi-wiesbaden']
+        local: !loc_join ['/var/www/freifunk.net/api.wiesbaden']
         remote: !str_join ['ssh://', *GITHUB_IDENT ,'/freifunk-mwu/ffapi-wiesbaden.git']
 icvpn:
     interface: &ICVPN_IF 'icVPN'
