@@ -155,6 +155,7 @@ icvpn:
             lotuswurzel: 'wiesbaden1'
             spinat: 'mainz2'
             wasserfloh: 'mainz1'
+            ingwer: 'mwu161'
 web:
     output: &HTML_ROOT_DIR !loc_join ['/var/www/html']
     system:
@@ -184,7 +185,7 @@ limit:
             interface: *FASTD_WI_IF
             sockfile: !loc_join ['/var/run/fastd-wi.status']
     fastd_status: !loc_join ['/usr/local/bin/fastd-status']
-    query: ['kaschu', 'lotuswurzel', 'spinat', 'wasserfloh']
+    query: ['kaschu', 'lotuswurzel', 'spinat', 'wasserfloh', 'ingwer']
     restart_max: 43200 # 12 hours
     stat: &LIMIT_STAT fastd_status.json
     stat_ext: !str_join ['http://%s.freifunk-mwu.de/', *LIMIT_STAT]
