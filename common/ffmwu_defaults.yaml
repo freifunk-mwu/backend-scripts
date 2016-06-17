@@ -155,7 +155,7 @@ icvpn:
             lotuswurzel: 'wiesbaden1'
             spinat: 'mainz2'
             wasserfloh: 'mainz1'
-            ingwer: 'mwu161'
+            ingwer: 'mainz_wiesbaden_umgebung161'
 web:
     output: &HTML_ROOT_DIR !loc_join ['/var/www/html']
     system:
