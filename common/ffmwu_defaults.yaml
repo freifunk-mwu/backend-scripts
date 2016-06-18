@@ -151,11 +151,11 @@ icvpn:
         hosts: !loc_join [*ICVPN_TINC_DIR, 'hosts']
         metanodes: !loc_join [*ICVPN_TINC_DIR, 'metanodes']
         iamdb: # :)
-            kaschu: 'wiesbaden2'
-            lotuswurzel: 'wiesbaden1'
-            spinat: 'mainz2'
-            wasserfloh: 'mainz1'
-            ingwer: 'mainz_wiesbaden_umgebung161'
+            kaschu: 'mwu208'
+            lotuswurzel: 'mwu23'
+            spinat: 'mwu7'
+            wasserfloh: 'mwu231'
+            ingwer: 'mwu161'
 web:
     output: &HTML_ROOT_DIR !loc_join ['/var/www/html']
     system:
