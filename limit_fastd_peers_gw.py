@@ -216,9 +216,15 @@ class Peers:
                               data.get('limit'),data.get('peers'),total))
                 for gw in self.gateways:
                     if self.hostname != gw:
-                        data = self.peers.get(gw, {}).get(com, {})
-                        logfile.write(",%s,%03d,%03d" %
+                        try:
+                            data = self.peers.get(gw, {}).get(com, {})
+                            if data:
+                                logfile.write(",%s,%03d,%03d" %
                                       (gw,data.get('limit'),data.get('peers')))
+                            else:
+                                logfile.write(",%s,<off?>" % gw)
+                        except:
+                            logfile.write(",%s,<ERR>" % gw)
             
                 logfile.write("\n")
                 
