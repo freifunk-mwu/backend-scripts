@@ -27,7 +27,7 @@ def update_bind_conf():
     config_content = photon.m(
         'genarating bind conf',
         cmdd=dict(
-            cmd='./mkdns -f bind -s %s -x mainz -x wiesbaden -x bingen' % (
+            cmd='./mkdns -f bind -s %s -x mwu -x bingen' % (
                 settings['icvpn']['icdns']['meta']['local']
             ),
             cwd=settings['icvpn']['icdns']['scripts']['local']
