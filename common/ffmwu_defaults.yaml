@@ -107,6 +107,16 @@ fastd:
     _bingen:
         local: !loc_join ['/etc/fastd', *FASTD_MZ_IF, 'peers_bingen']
         remote: 'https://github.com/freifunk-bingen/peers-ffbin'
+    mzig:
+        interface: mzigVPN
+        local: /etc/fastd/mzigVPN/peers
+        pidfile: /var/run/fastd.mzigVPN.pid
+        remote: ssh://github_mwu/freifunk-mwu/ffmz-infrastructure-peers.git
+    wiig:
+        interface: wiigVPN
+        local: /etc/fastd/wiigVPN/peers
+        pidfile: /var/run/fastd.wiigVPN.pid
+        remote: ssh://github_mwu/freifunk-mwu/ffmz-infrastructure-peers.git
 ffapi:
     mz:
         local: !loc_join ['/var/www/freifunk-mainz.de/api']
