@@ -6,7 +6,7 @@ SCRIPTPATH=$(dirname "$(readlink -f "$0")" )
 . "$SCRIPTPATH/icvpn_config"
 
 update_bind() (
-	$ICVPN_SCRIPTS/mkdns -f bind -s $ICVPN_META -x mwu > $BIND_CONFIG
+	$ICVPN_SCRIPTS/mkdns -f bind -s $ICVPN_META -x mwu -x bingen > $BIND_CONFIG
 	sudo named-checkconf
 	sudo rndc reload
 )
