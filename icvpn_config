@@ -15,13 +15,13 @@ export TINC_NETWORK=icVPN
 
 # Bird
 export BIRD_ROOT=/etc/bird
-export BIRD4_ROA=$BIRD_ROOT/ebgp_roa_v4.inc
-export BIRD4_PEERS=$BIRD_ROOT/ebgp_peers_v4.inc
-export BIRD6_ROA=$BIRD_ROOT/ebgp_roa_v6.inc
-export BIRD6_PEERS=$BIRD_ROOT/ebgp_peers_v6.inc
-export BIRD_BGP_TEMPLATE=ebgp_ic
+export BIRD4_ROA=$BIRD_ROOT/icvpn_ipv4_roa.conf
+export BIRD4_PEERS=$BIRD_ROOT/icvpn_ipv4_peers.conf
+export BIRD6_ROA=$BIRD_ROOT/icvpn_ipv6_roa.conf
+export BIRD6_PEERS=$BIRD_ROOT/icvpn_ipv6_peers.conf
+export BIRD_BGP_TEMPLATE=ebgp_icvpn
 export BIRD_PASSIVE_TIMEOUT=2
-export BIRD_ROA_TABLE_NAME=icvpn
+export BIRD_ROA_TABLE_NAME=roa_icvpn
 
 # Bind
 export BIND_ROOT=/etc/bind
