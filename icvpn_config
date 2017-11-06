@@ -1,0 +1,29 @@
+# Local Community Name (as seen in icvpn-meta)
+export LOCAL_COMMUNITY=mwu
+
+# Repositories
+export LIB_DIR=/home/admin/clones
+
+export ICVPN_META=$LIB_DIR/icvpn-meta
+export ICVPN_META_REMOTE=https://github.com/freifunk/icvpn-meta.git
+
+export ICVPN_SCRIPTS=$LIB_DIR/icvpn-scripts
+export ICVPN_SCRIPTS_REMOTE=https://github.com/freifunk/icvpn-scripts.git
+
+# Tinc
+export TINC_NETWORK=icVPN
+
+# Bird
+export BIRD_ROOT=/etc/bird
+export BIRD4_ROA=$BIRD_ROOT/icvpn_ipv4_roa.conf
+export BIRD4_PEERS=$BIRD_ROOT/icvpn_ipv4_peers.conf
+export BIRD6_ROA=$BIRD_ROOT/icvpn_ipv6_roa.conf
+export BIRD6_PEERS=$BIRD_ROOT/icvpn_ipv6_peers.conf
+export BIRD_BGP_TEMPLATE=ebgp_icvpn
+export BIRD_PASSIVE_TIMEOUT=2
+export BIRD_ROA_TABLE_NAME=roa_icvpn
+
+# Bind
+export BIND_ROOT=/etc/bind
+export BIND_CONFIG=$BIND_ROOT/named.conf.icvpn
+
