@@ -8,19 +8,19 @@ SITES="bin mz mzig wi wiig"
 
 # site definitions
 bin_REMOTE="https://github.com/freifunk-bingen/peers-ffbin.git"
-bin_LOCAL="/etc/fastd/mzVPN/peers_bingen"
+bin_LOCAL="/etc/fastd/mzvpn-1406/peers_bingen"
 
 mz_REMOTE="https://github.com/freifunk-mwu/peers-ffmz.git"
-mz_LOCAL="/etc/fastd/mzVPN/peers"
+mz_LOCAL="/etc/fastd/mzvpn-1406/peers"
 
 mzig_REMOTE="https://github.com/freifunk-mwu/ffmz-infrastructure-peers.git"
-mzig_LOCAL="/etc/fastd/mzigVPN/peers"
+mzig_LOCAL="/etc/fastd/mzigvpn-1406/peers"
 
 wi_REMOTE="https://github.com/freifunk-mwu/peers-ffmz.git"
-wi_LOCAL="/etc/fastd/wiVPN/peers"
+wi_LOCAL="/etc/fastd/wivpn-1406/peers"
 
 wiig_REMOTE="https://github.com/freifunk-mwu/ffwi-infrastructure-peers.git"
-wiig_LOCAL="/etc/fastd/wiigVPN/peers"
+wiig_LOCAL="/etc/fastd/wiigvpn-1406/peers"
 
 # sync git repositories for all sites
 for SITE in ${SITES}; do
@@ -44,7 +44,7 @@ for SITE in ${SITES}; do
 	fi
 	
 	# if site has a matching fastd instance reload it
-	if [ -d "/etc/fastd/${SITE}VPN" ]; then
-		sudo systemctl reload fastd@${SITE}VPN
+	if [ -d "/etc/fastd/${SITE}vpn-1406" ]; then
+		sudo systemctl reload fastd@${SITE}vpn-1406
 	fi
 done

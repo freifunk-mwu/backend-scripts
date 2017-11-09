@@ -11,7 +11,7 @@ export ICVPN_SCRIPTS=$LIB_DIR/icvpn-scripts
 export ICVPN_SCRIPTS_REMOTE=https://github.com/freifunk/icvpn-scripts.git
 
 # Tinc
-export TINC_NETWORK=icVPN
+export TINC_NETWORK=icvpn
 
 # Bird
 export BIRD_ROOT=/etc/bird
