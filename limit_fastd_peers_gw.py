@@ -173,41 +173,6 @@ class Peers:
         else:
             print('~ no data available for %s' % (self.hostname))
 
-    def append_csv_logs(self):
-        '''
-        append a log line to static csv logs each, for long term observation
-        one log file per fastd instance
-        format: hostname,timestamp,num_gates,limit,peers,total,[other gates:hostname,limit,peers]
-        '''
-        for instance in self.settings['fastd_instances']:
-            #: the following few lines just copied from "limit"
-            on_gws = 0
-            total = 0
-            for gw in self.settings['gateways']:
-                peers = self.peers.get(gw, {}).get(instance, {}).get('peers')
-                if peers:
-                    on_gws += 1
-                    total += peers
-                    
-            data = self.peers.get(self.hostname, {}).get(instance, {})
-            with open(self.settings['cronlog'] % (instance), "a") as logfile:
-                logfile.write("%s,%d,%d,%03d,%03d,%03d" %
-                              (self.hostname,timestamp(),on_gws,
-                              data.get('limit'),data.get('peers'),total))
-                for gw in self.settings['gateways']:
-                    if self.hostname != gw:
-                        try:
-                            data = self.peers.get(gw, {}).get(instance, {})
-                            if data:
-                                logfile.write(",%s,%03d,%03d" %
-                                      (gw,data.get('limit'),data.get('peers')))
-                            else:
-                                logfile.write(",%s,<off?>" % gw)
-                        except:
-                            logfile.write(",%s,<ERR>" % gw)
-            
-                logfile.write("\n")
-                
     def limit(self):
         '''
         Loops over fastd instances and Gateways, proposing a ``limit`` for
@@ -356,7 +321,6 @@ def limit_fastd_peers():
         if write_fastd_config_limit(settings, instance, limit, uptime):
             print('~ fastd restart for %s required' % (instance))
             call(['sudo', 'systemctl', 'restart', 'fastd@%s' % (instance)])
-    peers.append_csv_logs()
 
 if __name__ == '__main__':
     limit_fastd_peers()
