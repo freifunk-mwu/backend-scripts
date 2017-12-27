@@ -166,6 +166,8 @@ class Peers:
         if data:
             #: update timestamp
             data.update({'_timestamp': timestamp()})
+            if self.settings['ansible_gate']:
+                data.update({'ansible': True})
             with open(self.settings['stat_local'] % (self.settings['stat']), 'w') as outfile:
                 dump(data, outfile, indent=4, sort_keys=True)
             print('~ write peers file for %s to %s' % 
@@ -195,7 +197,7 @@ class Peers:
                 #: sum them up, if any present
                 #: while gateway migration (ansible) we implement backward 
                 #: compatibility for fastd instances of legacy gateways
-                ansible = self.peers.get(gw, {}).get(instance, {}).get('ansible')
+                ansible = self.peers.get(gw, {}).get('ansible')
                 if ansible:
                     peers = self.peers.get(gw, {}).get(instance, {}).get('peers')
                 elif instance.startswith('mz'):
@@ -246,9 +248,6 @@ class Peers:
             if data:
                 data.update({'limit': limit})
                 self.peers[self.hostname][instance] = data
-
-            if self.settings['ansible_gate']:
-                data.update({'ansible': True})
 
         self.dump_local()
 
