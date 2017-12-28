@@ -33,7 +33,7 @@ settings = {
     'cronlog': '/home/admin/.cronlog/limit.%s.log',
     'fastd_config': '/etc/fastd/%sVPN/fastd.conf',
     'fastd_status': '/usr/local/bin/fastd-status',
-    'gateways': ['lotuswurzel', 'spinat', 'wasserfloh', 'ingwer'],
+    'gateways': ['lotuswurzel', 'spinat', 'wasserfloh', 'ingwer', 'uffschnitt'],
     'restart_max': 43200, # 12 hours
     'stat': 'fastd_status.json',
     'stat_ext': 'http://%s.freifunk-mwu.de/%s',
@@ -240,7 +240,12 @@ class Peers:
             for gw in settings['gateways']:
                 #: find the peers per gateway of the current community,
                 #: sum them up, if any present
-                peers = self.peers.get(gw, {}).get(com, {}).get('peers')
+                ansible = self.peers.get(gw, {}).get('ansible')
+                if ansible:
+                    instance = com + 'vpn-1406'
+                    peers = self.peers.get(gw, {}).get(instance, {}).get('peers')
+                else:
+                    peers = self.peers.get(gw, {}).get(com, {}).get('peers')
                 if peers:
                     online_gws += 1
                     total_peers += peers
