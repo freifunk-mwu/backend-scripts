@@ -155,6 +155,9 @@ class Peers:
             else:
                 print('~ no data for %s available' % (instance))
 
+        if self.settings['ansible_gate']:
+            res.update({'ansible': True})
+
         self.peers[self.hostname] = res
 
     def dump_local(self):
@@ -166,8 +169,6 @@ class Peers:
         if data:
             #: update timestamp
             data.update({'_timestamp': timestamp()})
-            if self.settings['ansible_gate']:
-                data.update({'ansible': True})
             with open(self.settings['stat_local'] % (self.settings['stat']), 'w') as outfile:
                 dump(data, outfile, indent=4, sort_keys=True)
             print('~ write peers file for %s to %s' % 
