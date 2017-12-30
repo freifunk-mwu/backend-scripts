@@ -38,7 +38,7 @@ def timestamp(rel=0):
     return (datetime.utcnow() - datetime.utcfromtimestamp(rel)).total_seconds()
 
 
-def get_url(url):
+def get_url(url, timeout):
     '''
     Helper function to retrieve data from the web
 
@@ -46,7 +46,7 @@ def get_url(url):
     '''
 
     try:
-        rsp = urlopen(url)
+        rsp = urlopen(url, timeout=timeout)
         return rsp.read().decode('utf-8')
     except (HTTPError, URLError, gaierror) as ex:
         print('error fetching url %s - %s' % (url, ex))
@@ -104,13 +104,13 @@ class Peers:
                 print('~ skipping self query %s' % (gw))
                 continue
 
-            request = get_url(self.settings['stat_ext'] % (gw, self.settings['stat']))
+            request = get_url(self.settings['stat_ext'] % (gw, self.settings['stat']), self.settings['remote_fetch_timeout'])
             data = unload_json(request)
             if data and data.get('_timestamp'):
                 #: check remote timestamp
                 if (
                     timestamp() >= data['_timestamp'] >=
-                    timestamp(rel=self.settings['timeout'])
+                    timestamp(rel=self.settings['remote_data_timeout'])
                 ):
                     #: copy received and valid data over
                     self.peers[gw] = data
