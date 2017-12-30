@@ -206,7 +206,7 @@ class Peers:
                 elif instance.startswith('wi'):
                     peers = self.peers.get(gw, {}).get('wi', {}).get('peers')
 
-                if peers:
+                if peers is not None:
                     online_gws += 1
                     total_peers += peers
 
