@@ -312,7 +312,7 @@ def limit_fastd_peers():
     '''
 
     home = getenv('HOME')
-    stream = open(home + '/.config/fastd_peer_limit_config.yaml', 'r')
+    stream = open(home + '/.ffmwu-config/fastd_peer_limit_config.yaml', 'r')
     settings = yaml.load(stream)
 
     peers = Peers(settings)
