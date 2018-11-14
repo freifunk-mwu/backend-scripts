@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 '''
 This module is intended to ask other Gateways for connected peers of each
-community. Then, an ``average`` value and a ``gauge`` is determined, forming
-the ``limit``.
+fastd node instance. Then, an ``average`` value and a ``gauge`` is determined,
+forming the ``limit``.
 
-This number will be added as ``limit`` to the ``fast.conf`` of each community.
-
-This will hopefully distribute the nodes better over all our gateways.
+This number will be added as ``limit`` to the ``peer_limit.conf`` of each fastd instance.
 
 Start with :meth:`limit_fastd_peers`
 
@@ -15,17 +15,18 @@ To create configuration for fastd, the existing one is used, but with
 '''
 
 from datetime import datetime
-from json import loads
+from fileinput import FileInput
+from json import dump, loads
+from os import path, getenv
+from pprint import pprint
 from re import search as re_search
 from re import sub as re_sub
-from socket import gaierror
+from socket import gaierror, gethostname
+from subprocess import call, getstatusoutput
+from sys import exit
 from urllib.error import HTTPError, URLError
 from urllib.request import urlopen
-
-from photon.util.files import read_file, write_json
-
-from common import pinit
-
+import yaml
 
 def timestamp(rel=0):
     '''
@@ -37,28 +38,24 @@ def timestamp(rel=0):
     return (datetime.utcnow() - datetime.utcfromtimestamp(rel)).total_seconds()
 
 
-def get_url(photon, url):
+def get_url(url, timeout):
     '''
     Helper function to retrieve data from the web
 
-    :param photon: photon instance (for error reporting)
     :param url: url of file to retrieve
     '''
 
     try:
-        rsp = urlopen(url)
+        rsp = urlopen(url, timeout=timeout)
         return rsp.read().decode('utf-8')
     except (HTTPError, URLError, gaierror) as ex:
-        photon.m(
-            'error fetching url %s - %s' % (url, ex)
-        )
+        print('error fetching url %s - %s' % (url, ex))
 
 
-def unload_json(photon, raw, fallback=None):
+def unload_json(raw, fallback=None):
     '''
     Helper function to unpickle json data.
 
-    :param photon: photon instance (for error reporting)
     :param raw: json string to unload
     :param fallback: value to return on problems
     '''
@@ -66,41 +63,27 @@ def unload_json(photon, raw, fallback=None):
         try:
             return loads(raw)
         except ValueError as ex:
-            photon.m(
-                'could not decode json. fallback to %s - %s' % (fallback, ex)
-            )
+            print('~ could not decode json. fallback to %s - %s' % (fallback, ex))
     return fallback
 
 
 class Peers:
     '''
-    Central class to track the number of peers for each community over
+    Central class to track the number of peers for each fastd instance over
     each gateway.
 
     On start, first all settings are stored,
     then :meth:`pull_remote` and :meth:`pull_local` are called.
     '''
-    def __init__(self, photon):
-        self.p = photon
-        settings = photon.settings.get
-
-        self.additional = settings['limit']['additional']
-        self.communities = settings['common']['communities']
-        self.fastd = settings['limit']['fastd']
-        self.fastd_status = settings['limit']['fastd_status']
-        self.gateways = settings['limit']['query']
-        self.hostname = settings['common']['hostname']
-        self.stat_ext = settings['limit']['stat_ext']
-        self.stat_local = settings['limit']['stat_local']
-        self.timeout = settings['limit']['timeout']
+    def __init__(self, settings):
+        self.hostname = gethostname()
+        self.settings = settings
 
         #: stop the script, if it was started on the wrong machine.
-        if self.hostname not in self.gateways:
-            self.p.m(
-                '%s is not in gateways' % (self.hostname),
-                more=self.gateways,
-                state=True
-            )
+        if self.hostname not in self.settings['gateways']:
+            print('~ %s is not in gateways' % (self.hostname))
+            print(self.settings['gateways'])
+            exit(1)
 
         #: everything is stored in here
         self.peers = {}
@@ -116,46 +99,43 @@ class Peers:
 
         Validates files by timestamp, if data is too old, it will be ignored.
         '''
-        for gw in self.gateways:
+        for gw in self.settings['gateways']:
             if self.hostname == gw:
-                self.p.m('skipping self query %s' % (gw))
+                print('~ skipping self query %s' % (gw))
                 continue
 
-            request = get_url(self.p, self.stat_ext % (gw))
-            data = unload_json(self.p, request)
+            request = get_url(self.settings['stat_ext'] % (gw, self.settings['stat']), self.settings['remote_fetch_timeout'])
+            data = unload_json(request)
             if data and data.get('_timestamp'):
                 #: check remote timestamp
                 if (
                     timestamp() >= data['_timestamp'] >=
-                    timestamp(rel=self.timeout)
+                    timestamp(rel=self.settings['remote_data_timeout'])
                 ):
                     #: copy received and valid data over
                     self.peers[gw] = data
-                    self.p.m('got data for %s' % (gw), more=data)
+                    print('~ got data for %s' % (gw))
+                    pprint(data)
                 else:
-                    self.p.m('data for %s too old' % (gw))
+                    print('~ data for %s too old' % (gw))
             else:
-                self.p.m('data for %s invalid' % (gw))
+                print('~ data for %s invalid' % (gw))
 
     def pull_local(self):
         '''
-        Queries ``fastd-status`` command for each community,
+        Queries ``fastd-status`` command for each fastd instance,
         after :meth:`unload_json` it counts connections and adds them into
         ``peers``.
         '''
         res = {}
-        for com in self.communities:
-            status = self.p.m(
-                'running fastd-status for %s' % (com),
-                cmdd=dict(cmd='sudo %s %s' % (
-                    self.fastd_status,
-                    self.fastd[com]['sockfile']
-                )),
-                critical=False
-            )
-            if status.get('returncode') == 0:
+        for instance in self.settings['fastd_instances']:
+            print('~ running fastd-status for %s' % (instance))
+            #: TODO: replace with subprocess.run() when uprading to Python
+            status, output = getstatusoutput('sudo '+ self.settings['fastd_status'] +
+                    ' /var/run/fastd-%s.status' % (instance))
+            if status == 0:
                 #: we got data from fastd-status. unpickle the json here
-                current = unload_json(self.p, '\n'.join(status.get('stdout')))
+                current = unload_json(output)
                 if current.get('peers') and current.get('uptime'):
                     #: filter peers without connection
                     connected = [
@@ -164,15 +144,19 @@ class Peers:
                     ]
                     #: set own values here
                     #: convert uptime into seconds right at the source
-                    res[com] = {
+                    res[instance] = {
                         'peers': len(connected),
                         'uptime': int(current.get('uptime', 0) / 1000)
                     }
-                    self.p.m('got data for %s' % (com), more=res[com])
+                    print('~ got data for %s' % (instance))
+                    pprint(res[instance])
                 else:
-                    self.p.m('data for %s invalid' % (com))
+                    print('~ data for %s invalid' % (instance))
             else:
-                self.p.m('no data for %s available' % (com))
+                print('~ no data for %s available' % (instance))
+
+        if self.settings['ansible_gate']:
+            res.update({'ansible': True})
 
         self.peers[self.hostname] = res
 
@@ -185,53 +169,17 @@ class Peers:
         if data:
             #: update timestamp
             data.update({'_timestamp': timestamp()})
-            return self.p.m(
-                'write peers file for %s to %s' % (
-                    self.hostname, self.stat_local
-                ),
-                more='%s bytes' % (write_json(self.stat_local, data))
-            )
-        self.p.m('no data available for %s' % (self.hostname))
+            with open(self.settings['stat_local'] % (self.settings['stat']), 'w') as outfile:
+                dump(data, outfile, indent=4, sort_keys=True)
+            print('~ write peers file for %s to %s' % 
+                (self.hostname, self.settings['stat_local'] % (self.settings['stat'])))
+        else:
+            print('~ no data available for %s' % (self.hostname))
 
-    def append_csv_logs(self):
-        '''
-        append a log line to static csv logs each, for long term observation
-        one log file per community
-        format: hostname,timestamp,num_gates,limit,peers,total,[other gates:hostname,limit,peers]
-        '''
-        for com in self.communities:
-            #: the following few lines just copied from "limit"
-            on_gws = 0
-            total = 0
-            for gw in self.gateways:
-                peers = self.peers.get(gw, {}).get(com, {}).get('peers')
-                if peers:
-                    on_gws += 1
-                    total += peers
-                    
-            data = self.peers.get(self.hostname, {}).get(com, {})
-            with open("/home/admin/.cronlog/limit."+com+".log","a") as logfile:
-                logfile.write("%s,%d,%d,%03d,%03d,%03d" %
-                              (self.hostname,timestamp(),on_gws,
-                              data.get('limit'),data.get('peers'),total))
-                for gw in self.gateways:
-                    if self.hostname != gw:
-                        try:
-                            data = self.peers.get(gw, {}).get(com, {})
-                            if data:
-                                logfile.write(",%s,%03d,%03d" %
-                                      (gw,data.get('limit'),data.get('peers')))
-                            else:
-                                logfile.write(",%s,<off?>" % gw)
-                        except:
-                            logfile.write(",%s,<ERR>" % gw)
-            
-                logfile.write("\n")
-                
     def limit(self):
         '''
-        Loops over Communities and it's Gateways, proposing a ``limit`` for
-        each Community.
+        Loops over fastd instances and Gateways, proposing a ``limit`` for
+        each fastd instance.
 
         * First the ``average`` peers per gateway are calculated.
         * Then the ``gauge`` is calculated:
@@ -241,15 +189,24 @@ class Peers:
 
         Calls :meth:`dump_local` when finished.
         '''
-        for com in self.communities:
+        for instance in self.settings['fastd_instances']:
             total_peers = 0
-            total_gws = len(self.gateways)
+            total_gws = len(self.settings['gateways'])
             online_gws = 0
-            for gw in self.gateways:
-                #: find the peers per gateway of the current community,
+            for gw in self.settings['gateways']:
+                #: find the peers per gateway of the current fastd instance,
                 #: sum them up, if any present
-                peers = self.peers.get(gw, {}).get(com, {}).get('peers')
-                if peers:
+                #: while gateway migration (ansible) we implement backward 
+                #: compatibility for fastd instances of legacy gateways
+                ansible = self.peers.get(gw, {}).get('ansible')
+                if ansible:
+                    peers = self.peers.get(gw, {}).get(instance, {}).get('peers')
+                elif instance.startswith('mz'):
+                    peers = self.peers.get(gw, {}).get('mz', {}).get('peers')
+                elif instance.startswith('wi'):
+                    peers = self.peers.get(gw, {}).get('wi', {}).get('peers')
+
+                if peers is not None:
                     online_gws += 1
                     total_peers += peers
 
@@ -258,16 +215,13 @@ class Peers:
                 #: and :meth:`pull_local` produced no output
                 #: a.k.a ``self.peers`` is empty.
                 #: it avoids zero divisions while developing
-                self.p.m(
-                    'fatal: not a single gateway seems to be online',
-                    more='this should never happen',
-                    state=True
-                )
+                print('~ fatal: not a single gateway seems to be online')
+                exit(1)
 
-            #: calculate an average per gateway for current community
+            #: calculate an average per gateway for current fastd instance
             avg_peers = int(total_peers / online_gws)
-            self.p.m('%s: %s peers on %s gateways: avg %s' % (
-                com, total_peers, online_gws, avg_peers
+            print('~ %s: %s peers on %s gateways: avg %s' % (
+                instance, total_peers, online_gws, avg_peers
             ))
 
             #: calculate how much additional peers to provide above average
@@ -276,74 +230,71 @@ class Peers:
             #: if there was any gateway not reachable,
             #: additionally add ``additional`` per offline gateway
             offline_gws = total_gws - online_gws
-            gauge = ((1 + offline_gws) * self.additional)
-            self.p.m('%s: (1 + %s gateways offline) * %s additional: %s' % (
-                com, offline_gws, self.additional, gauge
+            gauge = ((1 + offline_gws) * self.settings['additional'])
+            print('~ %s: (1 + %s gateways offline) * %s additional: %s' % (
+                instance, offline_gws, self.settings['additional'], gauge
             ))
 
             #: calculate the limit
             limit = avg_peers + gauge
-            self.p.m('%s: %s + %s: limit %s' % (
-                com, avg_peers, gauge, limit
-            ))
+            print('~ %s: %s + %s: limit %s' % (instance, avg_peers, gauge, limit))
 
             #: finaly pull own data ...
-            data = self.peers.get(self.hostname, {}).get(com, {})
+            data = self.peers.get(self.hostname, {}).get(instance, {})
 
             #: ... to report community, limit and daemon uptime ...
-            yield com, limit, data.get('uptime', 0)
+            yield instance, limit, data.get('uptime', 0)
 
             #: ... and to store it in ``self.peers``
             if data:
                 data.update({'limit': limit})
-                self.peers[self.hostname][com] = data
+                self.peers[self.hostname][instance] = data
 
         self.dump_local()
 
 
-def write_fastd_config_limit(photon, com, limit, uptime):
+def write_fastd_config_limit(settings, instance, limit, uptime):
     '''
     Writes calculated limit to the config file of ``fastd``.
 
-    :param photon: photon instance (for error reporting, settings and helpers)
-    :param com: Community short name
+    :param settings: script settings
+    :param instance: fastd instance name
     :param limit: calculated fastd peer limit to write
     :param uptime: current fastd daemon uptime in seconds
     :return: ``True`` if ``fastd`` should be restarted then.
     '''
     LIMIT_RX = r'peer limit ([\d]+);'
-    settings = photon.settings.get
 
     #: locate the fastd config
-    config_file = settings['limit']['fastd'][com]['fastd']
-    config = read_file(config_file)
-    if not config:
-        photon.m('no fastd config found for %s (%s)' % (com, config_file))
+    config_file = settings['fastd_config'] % (instance)
+    if not path.exists(config_file):
+        print('~ %s: %s not found' %(instance,config_file))
         return False
+
+    #: load config to string
+    with open (config_file, "r") as file:
+        lines = file.readlines()
+        config = ''.join(lines)
 
     #: find current peer limit in fast config
     #: skip the rest if none present
     match = re_search(LIMIT_RX, config)
     if not match:
-        photon.m('no peer limit present in config for %s. skipping' % (com))
+        print('~ no peer limit present in config for %s. skipping' % (instance))
         return False
 
     old_limit = int(match.group(1))
 
-    #: use the template_handler with the current fastd config,
-    #: replacing the current limit by ``${limit}`` which itself
-    #: gets substituted with the calculated limit on writing
-    template = photon.template_handler(
-        re_sub(LIMIT_RX, 'peer limit ${limit};', config),
-        fields={'limit': limit}
-    )
-    template.write(config_file, append=False, backup=False)
+    #: replacing the current limit with the calculated limit
+    new_config = re_sub(LIMIT_RX, 'peer limit %s;' % (limit), config)
+    with open (config_file, "w") as file:
+        file.write(new_config)
 
     #: return ``True`` if there was a huge bump in the limit, or
     #: fast was running long enough..
     return any([
-        abs(limit - old_limit) >= settings['limit']['additional'],
-        uptime >= settings['limit']['restart_max']
+        abs(limit - old_limit) >= settings['additional'],
+        uptime >= settings['restart_max']
     ])
 
 
@@ -359,18 +310,17 @@ def limit_fastd_peers():
     Restarts ``fastd`` if there were changes greater than ``additional`` or
     fastd was running for more than ``restart_max`` seconds.
     '''
-    photon, settings = pinit('limit_fastd_peers')
-    peers = Peers(photon)
 
-    for community, limit, uptime in peers.limit():
-        if write_fastd_config_limit(photon, community, limit, uptime):
-            photon.m(
-                'fastd restart for %s required' % (community),
-                cmdd=dict(cmd='sudo service fastd restart %s' % (
-                    settings['limit']['fastd'][community]['interface']
-                ))
-            )
-    peers.append_csv_logs()
+    home = getenv('HOME')
+    stream = open(home + '/.ffmwu-config/fastd_peer_limit_config.yaml', 'r')
+    settings = yaml.load(stream)
+
+    peers = Peers(settings)
+
+    for instance, limit, uptime in peers.limit():
+        if write_fastd_config_limit(settings, instance, limit, uptime):
+            print('~ fastd restart for %s required' % (instance))
+            call(['sudo', 'systemctl', 'restart', 'fastd@%s' % (instance)])
 
 if __name__ == '__main__':
     limit_fastd_peers()
