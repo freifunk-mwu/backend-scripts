@@ -248,12 +248,7 @@ class Peers:
             for gw in self.gateways:
                 #: find the peers per gateway of the current community,
                 #: sum them up, if any present
-                ansible = self.peers.get(gw, {}).get('ansible')
-                if ansible:
-                    instance = com + 'vpn-1406'
-                    peers = self.peers.get(gw, {}).get(instance, {}).get('peers')
-                else:
-                    peers = self.peers.get(gw, {}).get(com, {}).get('peers')
+                peers = self.peers.get(gw, {}).get(com, {}).get('peers')
                 if peers:
                     online_gws += 1
                     total_peers += peers
