@@ -4,12 +4,9 @@
 set -e
 
 # sites to sync
-SITES="bin mz mzig wi wiig"
+SITES="mz mzig wi wiig"
 
 # site definitions
-bin_REMOTE="https://github.com/freifunk-bingen/peers-ffbin.git"
-bin_LOCAL="/etc/fastd/mzvpn-1406/peers_bingen"
-
 mz_REMOTE="https://github.com/freifunk-mwu/peers-ffmwu.git"
 mz_LOCAL="/etc/fastd/mzvpn-1406/peers"
 
