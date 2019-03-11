@@ -3,28 +3,25 @@
 # stop on any error
 set -e
 
-# sites to sync
-SITES="mz mzig wi wiig"
+# repos to sync
+REPOS="mwu mzig wiig"
 
-# site definitions
-mz_REMOTE="https://github.com/freifunk-mwu/peers-ffmwu.git"
-mz_LOCAL="/etc/fastd/mzvpn-1406/peers"
+# repo definitions
+mwu_REMOTE="https://github.com/freifunk-mwu/peers-ffmwu.git"
+mwu_LOCAL="/home/admin/clones/peers-ffmwu"
 
 mzig_REMOTE="https://github.com/freifunk-mwu/ffmz-infrastructure-peers.git"
 mzig_LOCAL="/etc/fastd/mzigvpn-1406/peers"
 
-wi_REMOTE="https://github.com/freifunk-mwu/peers-ffmwu.git"
-wi_LOCAL="/etc/fastd/wivpn-1406/peers"
-
 wiig_REMOTE="https://github.com/freifunk-mwu/ffwi-infrastructure-peers.git"
 wiig_LOCAL="/etc/fastd/wiigvpn-1406/peers"
 
-# sync git repositories for all sites
-for SITE in ${SITES}; do
-	REMOTE="$(eval echo \$${SITE}_REMOTE)"
-	LOCAL="$(eval echo \$${SITE}_LOCAL)"
+# sync git repositories
+for REPO in ${REPOS}; do
+	REMOTE="$(eval echo \$${REPO}_REMOTE)"
+	LOCAL="$(eval echo \$${REPO}_LOCAL)"
 
-	echo --- sync site ${SITE} ---
+	echo --- sync peers: ${REPO} ---
 
 	# create directory if necessary
 	mkdir -p ${LOCAL}
@@ -35,13 +32,19 @@ for SITE in ${SITES}; do
 	if ! $(${GIT} rev-parse --git-dir > /dev/null 2>&1) ; then
 		git clone "${REMOTE}" "${LOCAL}"
 	else
+		${GIT} fetch
 		${GIT} reset --hard origin/HEAD
-		${GIT} clean -f -d
-		${GIT} pull
-	fi
-
-	# if site has a matching fastd instance reload it
-	if [ -d "/etc/fastd/${SITE}vpn-1406" ]; then
-		sudo systemctl reload fastd@${SITE}vpn-1406
 	fi
 done
+
+KEY_DIR="${mwu_LOCAL}"
+KEY_LIST="/etc/fastd/fastd_peers.txt"
+KEY_LIST_TMP="/tmp/fastd_peers.tmp"
+
+: > "${KEY_LIST_TMP}"
+
+find "${KEY_DIR}" -type f -not -path '*/\.*' -not -name '*.md' | while read f; do
+	egrep -o '[a-z0-9]{64}' "$f" >> "${KEY_LIST_TMP}"
+done
+
+sudo mv "${KEY_LIST_TMP}" "${KEY_LIST}"
