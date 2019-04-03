@@ -4,9 +4,12 @@
 set -e
 
 # sites to sync
-SITES="mz mzig wi wiig dom0 dom1 dom2 dom3 dom4 dom5 dom6 dom7"
+SITES="mwu mz mzig wi wiig dom0 dom1 dom2 dom3 dom4 dom5 dom6 dom7"
 
 # site definitions
+mwu_REMOTE="https://github.com/freifunk-mwu/peers-ffmwu.git"
+mwu_LOCAL="/home/admin/clones/peers-ffmwu"
+
 mz_REMOTE="https://github.com/freifunk-mwu/peers-ffmwu.git"
 mz_LOCAL="/etc/fastd/mzvpn-1406/peers"
 
@@ -63,6 +66,13 @@ for SITE in ${SITES}; do
 		${GIT} reset --hard origin/HEAD
 		${GIT} clean -f -d
 		${GIT} pull
+	fi
+
+	LIMITER="/opt/go/bin/fastd-limiter"
+
+	# check if fastd-limiter is installed
+	if [ -f ${LIMITER} ]; then
+		${LIMITER} keys
 	fi
 
 	# if site has a matching fastd instance reload it
